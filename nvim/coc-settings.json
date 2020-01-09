@@ -1,0 +1,19 @@
+{
+  "suggest.timeout": 4000,
+  "suggest.echodocSupport": true,
+  "suggest.maxCompleteItemCount": 20,
+  "eslint.filetypes": [
+    "javascript",
+    "typescript",
+    "typescriptreact",
+    "javascriptreact",
+    "typescript.tsx"
+  ],
+  "eslint.autoFixOnSave": true,
+  "eslint.options": {
+    "rules": {
+      "no-unused-vars": ["warn"],
+      "@typescript-eslint/no-unused-vars": ["warn"]
+    }
+  }
+}
