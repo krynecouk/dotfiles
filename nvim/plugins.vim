@@ -1,14 +1,11 @@
 call plug#begin('~/.config/nvim/plugged')
-" tpope
-Plug 'tpope/vim-fugitive'
+" Typing
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 
 " Git
+Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
-
-" Vim airline
-Plug 'vim-airline/vim-airline'
 
 " NERDTree
 Plug 'preservim/nerdtree'
@@ -27,23 +24,18 @@ Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-java', {'do': 'yarn install --frozen-lockfile'}
 
-" Syntax highlight
+" Syntax
 Plug 'herringtondarkholme/yats.vim'
 Plug 'neoclide/vim-jsx-improve'
 Plug 'shougo/echodoc'
 
-" Filetype icons
+" Visuals
+Plug 'vim-airline/vim-airline'
 Plug 'ryanoasis/vim-devicons'
-
-" Vim rooter
-Plug 'airblade/vim-rooter'
-
-" Tab renam util
 Plug 'gcmt/taboo.vim'
-
-" Start screen
-Plug 'mhinz/vim-startify'
-
-" Dracula visual plugin
 Plug 'dracula/vim', { 'as': 'dracula' }
+
+" Utils
+Plug 'airblade/vim-rooter'
+Plug 'mhinz/vim-startify'
 call plug#end()
