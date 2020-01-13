@@ -1,0 +1,10 @@
+[user]
+	name = Darius Kryszczuk
+	mail = darius.kryszczuk@gmail.com
+	email = darius.kryszczuk@gmail.com
+[push]
+	default = simple
+[credential]
+	helper = cache --timeout=10800
+[core]
+	editor = vi
