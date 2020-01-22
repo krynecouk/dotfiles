@@ -1,1 +1,9 @@
+# NVIM
 ./nvim/plugged
+
+# EMACS
+.emacs.d/*/
+.emacs.d/*
+!.emacs.d/packages
+!.emacs.d/custom.el
+!.emacs.d/init.el
