@@ -4,7 +4,6 @@
 # EMACS
 .emacs.d/*/
 .emacs.d/*
-!.emacs.d/packages
-!.emacs.d/custom.el
 !.emacs.d/init.el
 !.emacs.d/settings.org
+!.emacs.d/README.org

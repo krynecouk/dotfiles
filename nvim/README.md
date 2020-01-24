@@ -15,11 +15,3 @@
 
 ### How to configure plugin
 `nvim ~/config/nvim/plugin/<plugin>`
-
-## EMACS configuration
-
-### Prerequisities
-- Emacs ^24
-
-### Help 
-- C-h 
