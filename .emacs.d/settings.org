@@ -5,8 +5,16 @@
 * Core
 ** =custom-file=
    #+BEGIN_SRC emacs-lisp
-     (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-     (load custom-file 'noerror)
+   (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+   (load custom-file 'noerror)
+   #+END_SRC
+** =auto-save-files=
+   #+BEGIN_SRC emacs-lisp
+   (setq auto-save-file-name-transforms `((".*" "~/.emacs-saves/" t)))
+   #+END_SRC
+** =backup-files=
+   #+BEGIN_SRC emacs-lisp
+   (setq backup-directory-alist '(("." . "~/.emacs-saves")))
    #+END_SRC
 ** =package-archives=
    #+BEGIN_SRC emacs-lisp
@@ -38,24 +46,53 @@
      (package-refresh-contents)
      (package-install 'use-package))
    (eval-when-compile (require 'use-package))
+   (use-package delight :ensure t)
+   (use-package use-package-ensure-system-package :ensure t)
    #+END_SRC
-** Basic 
+** Defaults 
    #+BEGIN_SRC emacs-lisp
-     (electric-pair-mode)
-     (winner-mode t)
-     (setq scroll-step 1)
-     (menu-bar-mode -1)
-     (tool-bar-mode -1)
-     (scroll-bar-mode -1)
-     (show-paren-mode)
-     (global-hl-line-mode t)
-     (load-theme 'wombat)
+   (setq-default
+	user-full-name "Darius Kryszczuk"
+	user-mail-address "darius.kryszczuk@gmail.com"
+    tab-width 4
+	indent-tabs-mode nil
+	load-prefer-newer t
+	use-package-always-ensure t
+    scroll-conservatively most-positive-fixnum)
+   (cd "~/dev")
+   (electric-pair-mode)
+   (winner-mode t)
+   (menu-bar-mode -1)
+   (tool-bar-mode -1)
+   (scroll-bar-mode -1)
+   (show-paren-mode)
+   (global-hl-line-mode t)
+   (fset 'yes-or-no-p 'y-or-n-p)
+   (load-theme 'wombat)
+   #+END_SRC
+* Visuals
+** Fonts
+   *NOTE:* install "Source Code Pro Medium" in your system.
+   #+BEGIN_SRC emacs-lisp
+   (set-face-attribute 'default nil :font "Source Code Pro Medium" :height 110)
+   (set-fontset-font t 'latin "Noto Sans")
+   #+END_SRC
+** Icons
+   *NOTE:* if it's the first time that you install the package, you must run =M-x all-the-icons-install-fonts=.
+   #+BEGIN_SRC emacs-lisp
+   (use-package all-the-icons)
+   #+END_SRC
+** Theme
+   #+BEGIN_SRC emacs-lisp
+   (use-package solaire-mode
+     :custom (solaire-mode-remap-fringe t)
+     :config
+     (solaire-global-mode +1))
    #+END_SRC
 * Packages
 ** Evil
    #+BEGIN_SRC emacs-lisp
    (use-package evil
-     :ensure t
      :init
      (setq evil-search-module 'evil-search)
      (setq evil-ex-complete-emacs-commands nil)
@@ -64,32 +101,96 @@
      (setq evil-shift-round nil)
      (setq evil-want-C-u-scroll t)
      :config
-     (evil-mode 1)
+     (evil-mode 1))
    
-     (use-package evil-surround
-       :ensure t
-       :config
-       (global-evil-surround-mode)))
+   (use-package evil-surround
+     :requires evil
+     :config
+     (global-evil-surround-mode))
+     
+   (use-package evil-commentary
+     :requires evil
+     :config
+     (evil-commentary-mode))
+   #+END_SRC
+** nlinum-relative
+   #+BEGIN_SRC emacs-lisp
+   (use-package nlinum-relative
+     :config
+     (setq nlinum-relative-redisplay-delay 0)
+     (setq nlinum-relative-current-symbol ">")
+     (setq nlinum-relative-offset 0)
+	 :hook (prog-mode . nlinum-relative-mode))
    #+END_SRC
 ** Ivy
    #+BEGIN_SRC emacs-lisp
    (use-package ivy
-     :ensure t
      :config
      (ivy-mode 1)
      (setq ivy-use-virtual-buffers t)
      (setq enable-recursive-minibuffers t)
-     ;; Ivy Keybindings
-     (global-set-key (kbd "C-c C-r") 'ivy-resume))
+     :bind ("C-c C-r" . ivy-resume))
      
    (use-package swiper
-     :ensure t
-     :config
-     (global-set-key "\C-s" 'swiper))  
+     :bind ("C-s" . swiper))  
      
    (use-package counsel 
-     :ensure t
-     :config 
-     (global-set-key (kbd "M-x") 'counsel-M-x)
-     (global-set-key (kbd "C-x C-f") 'counsel-find-file))
+     :bind (("M-x" . counsel-M-x)
+            ("C-x C-f" . counsel-find-file)))
    #+END_SRC
+** Flycheck
+   #+BEGIN_SRC emacs-lisp
+   (use-package flycheck
+     :init
+     (global-flycheck-mode t))
+   #+END_SRC
+** Company
+   #+BEGIN_SRC emacs-lisp
+   (use-package company)
+   #+END_SRC
+** LSP
+*** Core
+**** =lsp-mode=
+     #+BEGIN_SRC emacs-lisp
+     (use-package lsp-mode
+       :commands lsp
+       :custom
+       (lsp-enable-snippet nil)
+       (lsp-prefer-flymake nil) ; Use flycheck instead of flymake
+       :config
+       (setq lsp-auto-configure t)
+       :bind (:map lsp-mode-map ("C-c C-f" . lsp-format-buffer)))
+     #+END_SRC
+**** =lsp-ui=
+     #+BEGIN_SRC emacs-lisp
+     (use-package lsp-ui
+       :requires lsp-mode flycheck
+       :hook (lsp-mode . lsp-ui-mode))
+       #+END_SRC
+**** =company-lsp= 
+     #+BEGIN_SRC emacs-lisp
+     (use-package company-lsp
+     :requires company
+     :config 
+     (push 'company-lsp company-backends))
+     #+END_SRC
+**** =lsp-ivy=
+     #+BEGIN_SRC emacs-lisp
+     (use-package lsp-ivy
+       :requires ivy)
+     #+END_SRC
+*** Languages
+**** Typescript
+     #+BEGIN_SRC emacs-lisp
+     (use-package typescript-mode
+       :mode ("\\.tsx\\'" . typescript-mode)
+       :hook(typescript-mode . lsp))
+     #+END_SRC
+**** Java
+     Java LSP should be installed automatically. If not, install [[https://github.com/eclipse/eclipse.jdt.ls][Eclipse JDT Language Server]] and correct path below.
+     #+BEGIN_SRC emacs-lisp
+     (use-package lsp-java 
+       :after lsp
+       :custom (lsp-java-server-install-dir (expand-file-name "eclipse.jdt.ls/server" user-emacs-directory))
+       :hook (java-mode . lsp))
+     #+END_SRC
