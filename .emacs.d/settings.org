@@ -58,6 +58,11 @@
 	indent-tabs-mode nil
 	load-prefer-newer t
 	use-package-always-ensure t
+    display-line-numbers 'relative
+    display-line-numbers-current-absolute nil
+    display-line-numbers-grow-only t
+    recentf-max-menu-items 25
+    recentf-max-saved-items 25
     scroll-conservatively most-positive-fixnum)
    (cd "~/dev")
    (electric-pair-mode)
@@ -68,6 +73,7 @@
    (show-paren-mode)
    (global-hl-line-mode t)
    (fset 'yes-or-no-p 'y-or-n-p)
+   (recentf-mode 1)
    (load-theme 'wombat)
    #+END_SRC
 * Visuals
@@ -104,23 +110,14 @@
      (evil-mode 1))
    
    (use-package evil-surround
-     :requires evil
+     :requires (evil)
      :config
      (global-evil-surround-mode))
      
    (use-package evil-commentary
-     :requires evil
+     :requires (evil)
      :config
      (evil-commentary-mode))
-   #+END_SRC
-** nlinum-relative
-   #+BEGIN_SRC emacs-lisp
-   (use-package nlinum-relative
-     :config
-     (setq nlinum-relative-redisplay-delay 0)
-     (setq nlinum-relative-current-symbol ">")
-     (setq nlinum-relative-offset 0)
-	 :hook (prog-mode . nlinum-relative-mode))
    #+END_SRC
 ** Ivy
    #+BEGIN_SRC emacs-lisp
@@ -136,7 +133,8 @@
      
    (use-package counsel 
      :bind (("M-x" . counsel-M-x)
-            ("C-x C-f" . counsel-find-file)))
+            ("C-x C-f" . counsel-find-file)
+            ("C-x C-r" . counsel-recentf)))
    #+END_SRC
 ** Flycheck
    #+BEGIN_SRC emacs-lisp
@@ -148,41 +146,51 @@
    #+BEGIN_SRC emacs-lisp
    (use-package company)
    #+END_SRC
+** Yasnippet
+   #+BEGIN_SRC emacs-lisp
+   (use-package yasnippet)
+   #+END_SRC
 ** LSP
 *** Core
 **** =lsp-mode=
      #+BEGIN_SRC emacs-lisp
      (use-package lsp-mode
-       :commands lsp
+       :commands (lsp)
        :custom
-       (lsp-enable-snippet nil)
        (lsp-prefer-flymake nil) ; Use flycheck instead of flymake
-       :config
-       (setq lsp-auto-configure t)
-       :bind (:map lsp-mode-map ("C-c C-f" . lsp-format-buffer)))
+       :hook (prog-mode . lsp))
      #+END_SRC
 **** =lsp-ui=
      #+BEGIN_SRC emacs-lisp
      (use-package lsp-ui
-       :requires lsp-mode flycheck
+       :requires (lsp-mode flycheck)
+       :commands lsp-ui-mode
+       :custom 
+       (lsp-ui-sideline-show-symbol nil)
+       (lsp-ui-sideline-show-code-actions nil)
+       (lsp-ui-sideline-show-diagnostics t)
        :hook (lsp-mode . lsp-ui-mode))
        #+END_SRC
 **** =company-lsp= 
      #+BEGIN_SRC emacs-lisp
      (use-package company-lsp
-     :requires company
-     :config 
-     (push 'company-lsp company-backends))
+       :requires (company)
+       :config 
+       (push 'company-lsp company-backends)
+       (setq company-lsp-async t
+             company-lsp-cache-candidates 'auto
+             company-lsp-enable-recompletion t))
      #+END_SRC
 **** =lsp-ivy=
      #+BEGIN_SRC emacs-lisp
      (use-package lsp-ivy
-       :requires ivy)
+       :requires (lsp-mode ivy))
      #+END_SRC
 *** Languages
 **** Typescript
      #+BEGIN_SRC emacs-lisp
      (use-package typescript-mode
+       :after (lsp)
        :mode ("\\.tsx\\'" . typescript-mode)
        :hook(typescript-mode . lsp))
      #+END_SRC
@@ -190,7 +198,7 @@
      Java LSP should be installed automatically. If not, install [[https://github.com/eclipse/eclipse.jdt.ls][Eclipse JDT Language Server]] and correct path below.
      #+BEGIN_SRC emacs-lisp
      (use-package lsp-java 
-       :after lsp
+       :after (lsp)
        :custom (lsp-java-server-install-dir (expand-file-name "eclipse.jdt.ls/server" user-emacs-directory))
        :hook (java-mode . lsp))
      #+END_SRC
