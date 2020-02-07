@@ -18,27 +18,27 @@
    #+END_SRC
 ** =package-archives=
    #+BEGIN_SRC emacs-lisp
-   (require 'package)
-    
-   (setq
-    package-archives
-    '(
-      ("melpa-stable" . "http://stable.melpa.org/packages/")
-      ("org" . "https://orgmode.org/elpa/")
-      ("gnu" . "https://elpa.gnu.org/packages/")
-      ("melpa" . "https://melpa.org/packages/")
-      )
+     (require 'package)
 
-    package-archive-priorities
-    '(
-      ("melpa-stable" . 10)
-      ("org" . 5)
-      ("gnu" . 5)
-      ("melpa" . 0)
-      ))
+     (setq
+      package-archives
+      '(
+        ("melpa-stable" . "http://stable.melpa.org/packages/")
+        ("org" . "https://orgmode.org/elpa/")
+        ("gnu" . "https://elpa.gnu.org/packages/")
+        ("melpa" . "https://melpa.org/packages/")
+        )
 
-   (package-initialize)
-   (setq package-enable-at-startup nil)
+      package-archive-priorities
+      '(
+        ("melpa" . 20)
+        ("melpa-stable" . 10)
+        ("org" . 5)
+        ("gnu" . 5)
+        ))
+
+     ;; (package-initialize)
+     (setq package-enable-at-startup nil)
    #+END_SRC
 ** =use-package=
    #+BEGIN_SRC emacs-lisp
@@ -46,32 +46,38 @@
      (package-refresh-contents)
      (package-install 'use-package))
    (eval-when-compile (require 'use-package))
+   (use-package diminish :ensure t)
    (use-package delight :ensure t)
    (use-package use-package-ensure-system-package :ensure t)
    #+END_SRC
 ** Defaults 
    #+BEGIN_SRC emacs-lisp
    (setq-default
-	user-full-name "Darius Kryszczuk"
-	user-mail-address "darius.kryszczuk@gmail.com"
+    user-full-name "Darius Kryszczuk"
+    user-mail-address "darius.kryszczuk@gmail.com"
     tab-width 4
-	indent-tabs-mode nil
-	load-prefer-newer t
-	use-package-always-ensure t
+    indent-tabs-mode nil
+    load-prefer-newer t
+    use-package-always-ensure t
     display-line-numbers 'relative
     display-line-numbers-current-absolute nil
     display-line-numbers-grow-only t
     recentf-max-menu-items 25
     recentf-max-saved-items 25
+    electric-indent-mode -1
+    evil-want-C-u-scroll t
+    system-uses-terminfo nil
     scroll-conservatively most-positive-fixnum)
    (cd "~/dev")
-   (electric-pair-mode)
+   (electric-pair-mode t)
+   (global-visual-line-mode t)
    (winner-mode t)
    (menu-bar-mode -1)
    (tool-bar-mode -1)
    (scroll-bar-mode -1)
    (show-paren-mode)
    (global-hl-line-mode t)
+   (set-face-attribute hl-line-face nil :underline nil)
    (fset 'yes-or-no-p 'y-or-n-p)
    (recentf-mode 1)
    (load-theme 'wombat)
@@ -86,7 +92,9 @@
 ** Icons
    *NOTE:* if it's the first time that you install the package, you must run =M-x all-the-icons-install-fonts=.
    #+BEGIN_SRC emacs-lisp
-   (use-package all-the-icons)
+   (use-package all-the-icons
+     :custom
+     (all-the-icons-scale-factor 1.0))
    #+END_SRC
 ** Theme
    #+BEGIN_SRC emacs-lisp
@@ -98,6 +106,27 @@
 * Packages
 ** Evil
    #+BEGIN_SRC emacs-lisp
+   (use-package evil-leader
+     :init
+     (setq evil-leader/in-all-states t)
+     :config
+     ;; load evil-leader first so it's initialized for evil-mode
+     (global-evil-leader-mode)
+     (evil-leader/set-leader "<SPC>")
+     (evil-leader/set-key
+      "d" 'lsp-find-definition
+      "i" 'lsp-find-implementation
+      "r" 'lsp-find-references
+      "b" 'counsel-projectile-switch-to-buffer
+      "p" 'projectile-switch-project
+      "<SPC>" 'counsel-projectile-find-file
+      "f" 'counsel-projectile-rg
+      "t" 'treemacs
+      "]" 'flycheck-next-error
+      "[" 'flycheck-previous-error
+      "gp" 'prettier-eslint-fix-file)
+     )
+
    (use-package evil
      :init
      (setq evil-search-module 'evil-search)
@@ -106,6 +135,7 @@
      (setq evil-split-window-below t)
      (setq evil-shift-round nil)
      (setq evil-want-C-u-scroll t)
+     (setq evil-respect-visual-line-mode t)
      :config
      (evil-mode 1))
    
@@ -118,6 +148,21 @@
      :requires (evil)
      :config
      (evil-commentary-mode))
+     
+   (use-package evil-magit
+     :requires (evil))
+
+   (use-package evil-vimish-fold
+     :after vimish-fold
+     :init
+     (setq evil-vimish-fold-mode-lighter " ⮒")
+     (setq evil-vimish-fold-target-modes '(prog-mode conf-mode text-mode))
+     :config
+     (global-evil-vimish-fold-mode))
+   #+END_SRC
+** Magit
+   #+BEGIN_SRC emacs-lisp
+   (use-package magit)
    #+END_SRC
 ** Ivy
    #+BEGIN_SRC emacs-lisp
@@ -135,42 +180,193 @@
      :bind (("M-x" . counsel-M-x)
             ("C-x C-f" . counsel-find-file)
             ("C-x C-r" . counsel-recentf)))
+
+   (use-package counsel-projectile
+     :config
+     (counsel-projectile-mode +1))
    #+END_SRC
+# ** Flycheck
+#    #+BEGIN_SRC emacs-lisp
+#    (use-package flycheck
+#      :init
+#      (global-flycheck-mode t))
+#    #+END_SRC
+# ** Company
+#    #+BEGIN_SRC emacs-lisp
+#    (use-package company)
+#    #+END_SRC
 ** Flycheck
    #+BEGIN_SRC emacs-lisp
    (use-package flycheck
+     :hook (prog-mode . flycheck-mode)
+     :diminish "✓"
      :init
-     (global-flycheck-mode t))
+     (global-flycheck-mode t)
+     :custom  
+     (flycheck-check-syntax-automatically '(save mode-enabled newline))
+     (flycheck-display-errors-delay 0.1)
+     ;;:config
+    ;; (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist)))
+     ;;(setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(javascript-jshint)))
+     ;;(flycheck-add-mode 'javascript-eslint 'js-mode)
+)
    #+END_SRC
 ** Company
    #+BEGIN_SRC emacs-lisp
    (use-package company)
    #+END_SRC
+** Treemacs
+   #+BEGIN_SRC emacs-lisp
+   (use-package treemacs
+     :defer t
+     :init
+     (with-eval-after-load 'winum
+       (define-key winum-keymap (kbd "M-0") #'treemacs))
+     :config
+     (progn
+       (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+             treemacs-deferred-git-apply-delay      0.5
+             treemacs-directory-name-transformer    #'identity
+             treemacs-display-in-side-window        t
+             treemacs-eldoc-display                 t
+             treemacs-file-event-delay              5000
+             treemacs-file-extension-regex          treemacs-last-period-regex-value
+             treemacs-file-follow-delay             0.2
+             treemacs-file-name-transformer         #'identity
+             treemacs-follow-after-init             t
+             treemacs-git-command-pipe              ""
+             treemacs-goto-tag-strategy             'refetch-index
+             treemacs-indentation                   2
+             treemacs-indentation-string            " "
+             treemacs-is-never-other-window         nil
+             treemacs-max-git-entries               5000
+             treemacs-missing-project-action        'ask
+             treemacs-no-png-images                 nil
+             treemacs-no-delete-other-windows       t
+             treemacs-project-follow-cleanup        nil
+             treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+             treemacs-position                      'left
+             treemacs-recenter-distance             0.1
+             treemacs-recenter-after-file-follow    nil
+             treemacs-recenter-after-tag-follow     nil
+             treemacs-recenter-after-project-jump   'always
+             treemacs-recenter-after-project-expand 'on-distance
+             treemacs-show-cursor                   nil
+             treemacs-show-hidden-files             t
+             treemacs-silent-filewatch              nil
+             treemacs-silent-refresh                nil
+             treemacs-sorting                       'alphabetic-asc
+             treemacs-space-between-root-nodes      t
+             treemacs-tag-follow-cleanup            t
+             treemacs-tag-follow-delay              1.5
+             treemacs-width                         35)
+
+       ;; The default width and height of the icons is 22 pixels. If you are
+       ;; using a Hi-DPI display, uncomment this to double the icon size.
+       ;;(treemacs-resize-icons 44)
+
+       (treemacs-follow-mode t)
+       (treemacs-filewatch-mode t)
+       (treemacs-fringe-indicator-mode t)
+       (pcase (cons (not (null (executable-find "git")))
+                    (not (null treemacs-python-executable)))
+         (`(t . t)
+           (treemacs-git-mode 'deferred))
+         (`(t . _)
+           (treemacs-git-mode 'simple))))
+           :bind
+           (:map global-map
+           ("M-0"       . treemacs-select-window)
+           ("C-x t t"   . treemacs)
+           ("C-x t B"   . treemacs-bookmark)
+           ("C-x t 1"   . treemacs-delete-other-windows)
+           ("C-x t C-t" . treemacs-find-file)
+           ("C-x t M-t" . treemacs-find-tag)))
+
+           (use-package treemacs-evil
+           :after treemacs evil
+           )
+
+           (use-package treemacs-projectile
+           :after treemacs projectile
+           )
+
+           (use-package treemacs-icons-dired
+           :after treemacs dired
+           :config (treemacs-icons-dired-mode))
+
+           (use-package treemacs-magit
+             :after treemacs magit)
+   #+END_SRC
 ** Yasnippet
    #+BEGIN_SRC emacs-lisp
    (use-package yasnippet)
+   #+END_SRC
+** Projectile
+   #+BEGIN_SRC emacs-lisp
+   (use-package projectile
+     :custom
+     (projectile-sort-order 'recentf)
+     (projectile-indexing-method 'hybrid)
+     (projectile-completion-system 'ivy)
+     :config
+     (projectile-mode +1)
+     (define-key projectile-mode-map (kbd "C-c p") #'projectile-command-map)
+     (define-key projectile-mode-map (kbd "s-p") #'projectile-find-file)
+     (define-key projectile-mode-map (kbd "s-F") #'projectile-ripgrep))
+   #+END_SRC
+** Dired narrow
+   #+BEGIN_SRC emacs-lisp
+   (use-package dired-narrow
+   :ensure t
+   :bind (:map dired-mode-map ("/" . dired-narrow)))
+   #+END_SRC
+** Vimish fold
+   #+BEGIN_SRC emacs-lisp
+   (use-package vimish-fold
+   :config (vimish-fold-global-mode 1)
+   )
+   
    #+END_SRC
 ** LSP
 *** Core
 **** =lsp-mode=
      #+BEGIN_SRC emacs-lisp
      (use-package lsp-mode
+       :hook ((java-mode
+               js-mode
+               prog-mode
+               web-mode) . lsp)
        :commands (lsp)
        :custom
        (lsp-prefer-flymake nil) ; Use flycheck instead of flymake
-       :hook (prog-mode . lsp))
+       (lsp-enable-symbol-highlighting nil)
+       (lsp-signature-auto-activate nil)
+       :init
+       (add-to-list 'auto-mode-alist '("\\.ts\\'" . js-mode))
+       (add-to-list 'auto-mode-alist '("\\.tsx\\'" . js-mode))
+       (add-to-list 'auto-mode-alist '("\\.js\\'" . js-mode))
+       (add-to-list 'auto-mode-alist '("\\.jsx\\'" . js-mode))
+       (setenv "TSSERVER_LOG_FILE" "/tmp/tsserver.log")
+       (setq js-indent-level 2)
+       (setq lsp-eslint-server-command 
+             '("node" 
+               "/home/darius/.emacs.d/vscode/dbaeumer.vscode-eslint-2.0.15/extension/server/out/eslintServer.js" 
+               "--stdio"))
+       )
      #+END_SRC
 **** =lsp-ui=
      #+BEGIN_SRC emacs-lisp
      (use-package lsp-ui
-       :requires (lsp-mode flycheck)
-       :commands lsp-ui-mode
-       :custom 
-       (lsp-ui-sideline-show-symbol nil)
-       (lsp-ui-sideline-show-code-actions nil)
-       (lsp-ui-sideline-show-diagnostics t)
-       :hook (lsp-mode . lsp-ui-mode))
-       #+END_SRC
+       :config
+       (setq lsp-ui-sideline-enable nil)
+       (setq lsp-ui-doc-enable nil))
+     #+END_SRC
+**** =lsp-ivy=
+     #+BEGIN_SRC emacs-lisp
+     (use-package lsp-ivy
+       :requires (lsp-mode ivy))
+     #+END_SRC
 **** =company-lsp= 
      #+BEGIN_SRC emacs-lisp
      (use-package company-lsp
@@ -181,24 +377,91 @@
              company-lsp-cache-candidates 'auto
              company-lsp-enable-recompletion t))
      #+END_SRC
-**** =lsp-ivy=
-     #+BEGIN_SRC emacs-lisp
-     (use-package lsp-ivy
-       :requires (lsp-mode ivy))
-     #+END_SRC
 *** Languages
-**** Typescript
-     #+BEGIN_SRC emacs-lisp
-     (use-package typescript-mode
-       :after (lsp)
-       :mode ("\\.tsx\\'" . typescript-mode)
-       :hook(typescript-mode . lsp))
-     #+END_SRC
+**** Web
+***** =prettier-js=
+      Install =prettier= first.
+      #+BEGIN_SRC emacs-lisp
+      (use-package prettier-js
+        :delight
+;;        :custom (prettier-js-args '("--print-width" "100"
+ ;;                                   "--single-quote" "true"
+  ;;                                  "--trailing-comma" "all"))
+  )
+
+      #+END_SRC
+# ***** =typescript-mode=
+#       #+BEGIN_SRC emacs-lisp
+#       (use-package typescript-mode
+#         :after (lsp)
+#         :mode ("\\.tsx\\'" . typescript-mode)
+#         :hook(typescript-mode . lsp))
+#       #+END_SRC
+***** =web-mode=
+      #+BEGIN_SRC emacs-lisp
+      (use-package web-mode
+        :hook ((css-mode web-mode) . rainbow-mode)
+        :mode (("\\.html?\\'" . web-mode)
+               ("\\.js\\'" . web-mode)
+               ("\\.css\\'" . web-mode)
+               ("\\.jsx\\'" . web-mode)
+               ("\\.ts\\'" . web-mode)
+               ("\\.tsx\\'" . web-mode))
+        :custom
+        (web-mode-attr-indent-offset 2)
+        (web-mode-block-padding 2)
+        (web-mode-css-indent-offset 2)
+        (web-mode-code-indent-offset 2)
+        (web-mode-comment-style 2)
+        (web-mode-enable-current-element-highlight t)
+        (web-mode-markup-indent-offset 2))
+       #+END_SRC
+
+        # (add-hook 'web-mode-hook #'(lambda () (enable-minor-mode '("\\.js?\\'" . js-mode))))
+        # (add-hook 'web-mode-hook #'(lambda () (enable-minor-mode '("\\.jsx?\\'" . js-mode))))
+        # (add-hook 'web-mode-hook #'(lambda () (enable-minor-mode '("\\.ts?\\'" . js-mode))))
+        # (add-hook 'web-mode-hook #'(lambda () (enable-minor-mode '("\\.tsx?\\'" . js-mode))))
+***** =rainbow-mode=
+       #+BEGIN_SRC emacs-lisp
+       (use-package rainbow-mode
+         :hook (web-mode . rainbow-mode))
+       #+END_SRC
+***** =json-mode=
+      #+BEGIN_SRC emacs-lisp
+      (use-package json-mode)
+      #+END_SRC
+***** =add-node-modules-path=
+      #+BEGIN_SRC emacs-lisp
+      (use-package add-node-modules-path
+        :config
+        (eval-after-load 'js-mode
+          '(add-hook 'js-mode-hook 'add-node-modules-path)))
+      #+END_SRC
+# ***** =js2-mode=
+#       #+BEGIN_SRC emacs-lisp
+#       (use-package js2-mode)
+#       #+END_SRC
 **** Java
      Java LSP should be installed automatically. If not, install [[https://github.com/eclipse/eclipse.jdt.ls][Eclipse JDT Language Server]] and correct path below.
      #+BEGIN_SRC emacs-lisp
      (use-package lsp-java 
        :after (lsp)
-       :custom (lsp-java-server-install-dir (expand-file-name "eclipse.jdt.ls/server" user-emacs-directory))
-       :hook (java-mode . lsp))
+       :custom (
+       (lsp-java-server-install-dir (expand-file-name "eclipse.jdt.ls/server" user-emacs-directory))))
      #+END_SRC
+* Custom Lisp
+** =eslint-auto.el=
+   #+BEGIN_SRC emacs-lisp
+   (defun eslint-fix-file ()
+     (interactive)
+     (message "eslint --fixing the file" (buffer-file-name))
+     (shell-command (concat "eslint --fix " (buffer-file-name))))
+   #+END_SRC
+
+** =prettier-eslint-auto.el=
+   #+BEGIN_SRC emacs-lisp
+   (defun prettier-eslint-fix-file ()
+     (interactive)
+     (message "prettier-eslint --fixing the file" (buffer-file-name))
+     (shell-command (concat "prettier-eslint --write " (buffer-file-name))))
+   #+END_SRC
