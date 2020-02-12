@@ -10,35 +10,34 @@
    #+END_SRC
 ** =auto-save-files=
    #+BEGIN_SRC emacs-lisp
-   (setq auto-save-file-name-transforms `((".*" "~/.emacs-saves/" t)))
+   (setq auto-save-default nil)
+   ;;(setq auto-save-file-name-transforms `((".*" "~/.emacs-saves/" t)))
    #+END_SRC
 ** =backup-files=
    #+BEGIN_SRC emacs-lisp
-   (setq backup-directory-alist '(("." . "~/.emacs-saves")))
+   (setq make-backup-files nil)
+   ;;(setq backup-directory-alist '(("." . "~/.emacs-saves")))
    #+END_SRC
 ** =package-archives=
    #+BEGIN_SRC emacs-lisp
-     (require 'package)
+   (require 'package)
+   (setq
+    package-archives
+    '(
+      ("melpa" . "https://melpa.org/packages/")
+      ("melpa-stable" . "http://stable.melpa.org/packages/")
+      ("org" . "https://orgmode.org/elpa/")
+      ("gnu" . "https://elpa.gnu.org/packages/"))
 
-     (setq
-      package-archives
-      '(
-        ("melpa-stable" . "http://stable.melpa.org/packages/")
-        ("org" . "https://orgmode.org/elpa/")
-        ("gnu" . "https://elpa.gnu.org/packages/")
-        ("melpa" . "https://melpa.org/packages/")
-        )
+    package-archive-priorities
+    '(
+      ("melpa" . 20)
+      ("melpa-stable" . 10)
+      ("org" . 5)
+      ("gnu" . 5)))
 
-      package-archive-priorities
-      '(
-        ("melpa" . 20)
-        ("melpa-stable" . 10)
-        ("org" . 5)
-        ("gnu" . 5)
-        ))
-
-     ;; (package-initialize)
-     (setq package-enable-at-startup nil)
+    (when (version< emacs-version "27.0") (package-initialize))
+    (setq package-enable-at-startup nil)
    #+END_SRC
 ** =use-package=
    #+BEGIN_SRC emacs-lisp
@@ -50,7 +49,7 @@
    (use-package delight :ensure t)
    (use-package use-package-ensure-system-package :ensure t)
    #+END_SRC
-** Defaults 
+** Defaults
    #+BEGIN_SRC emacs-lisp
    (setq-default
     user-full-name "Darius Kryszczuk"
@@ -65,8 +64,6 @@
     recentf-max-menu-items 25
     recentf-max-saved-items 25
     electric-indent-mode -1
-    evil-want-C-u-scroll t
-    system-uses-terminfo nil
     scroll-conservatively most-positive-fixnum)
    (cd "~/dev")
    (electric-pair-mode t)
@@ -80,7 +77,6 @@
    (set-face-attribute hl-line-face nil :underline nil)
    (fset 'yes-or-no-p 'y-or-n-p)
    (recentf-mode 1)
-   (load-theme 'wombat)
    #+END_SRC
 * Visuals
 ** Fonts
@@ -98,10 +94,17 @@
    #+END_SRC
 ** Theme
    #+BEGIN_SRC emacs-lisp
-   (use-package solaire-mode
-     :custom (solaire-mode-remap-fringe t)
-     :config
-     (solaire-global-mode +1))
+   (load-theme 'deeper-blue t)
+   (let ((custom--inhibit-theme-enable nil))
+   (custom-theme-set-faces
+    'deeper-blue
+    '(mode-line ((t (:background "gray75" :foreground "black" :box (:line-width 1 :style nil)))))
+    '(mode-line-buffer-id ((t (:weight bold :background nil :foreground "blue4"))))
+    '(mode-line-inactive ((t (:background "gray40" :foreground "black" :box (:line-width 1 :color "gray40" :style nil)))))
+    '(region ((t (:background "gray40"))))
+    '(cursor ((t (:background "#F29112"))))
+    )
+   )
    #+END_SRC
 * Packages
 ** Evil
@@ -110,22 +113,21 @@
      :init
      (setq evil-leader/in-all-states t)
      :config
-     ;; load evil-leader first so it's initialized for evil-mode
      (global-evil-leader-mode)
      (evil-leader/set-leader "<SPC>")
      (evil-leader/set-key
-      "d" 'lsp-find-definition
-      "i" 'lsp-find-implementation
-      "r" 'lsp-find-references
-      "b" 'counsel-projectile-switch-to-buffer
-      "p" 'projectile-switch-project
-      "<SPC>" 'counsel-projectile-find-file
-      "f" 'counsel-projectile-rg
-      "t" 'treemacs
-      "]" 'flycheck-next-error
-      "[" 'flycheck-previous-error
-      "gp" 'prettier-eslint-fix-file)
-     )
+       "dd" 'lsp-find-definition
+       "ii" 'lsp-find-implementation
+       "rr" 'lsp-find-references
+       "bb" 'counsel-projectile-switch-to-buffer
+       "pp" 'projectile-switch-project
+       "<SPC>" 'counsel-projectile-find-file
+       "f" 'counsel-projectile-rg
+       "tt" 'treemacs
+       "]" 'flycheck-next-error
+       "[" 'flycheck-previous-error
+       "gp" 'prettier-js
+       "gl" 'lsp-eslint-apply-all-fixes))
 
    (use-package evil
      :init
@@ -135,27 +137,30 @@
      (setq evil-split-window-below t)
      (setq evil-shift-round nil)
      (setq evil-want-C-u-scroll t)
+     (with-eval-after-load 'comint (define-key comint-mode-map "\C-d" nil))
      (setq evil-respect-visual-line-mode t)
+     :custom
+     (evil-want-C-u-scroll t)
      :config
      (evil-mode 1))
-   
+
    (use-package evil-surround
      :requires (evil)
      :config
      (global-evil-surround-mode))
-     
+
    (use-package evil-commentary
      :requires (evil)
      :config
      (evil-commentary-mode))
-     
+
    (use-package evil-magit
      :requires (evil))
 
    (use-package evil-vimish-fold
      :after vimish-fold
+     :delight " ⮒ "
      :init
-     (setq evil-vimish-fold-mode-lighter " ⮒")
      (setq evil-vimish-fold-target-modes '(prog-mode conf-mode text-mode))
      :config
      (global-evil-vimish-fold-mode))
@@ -163,6 +168,24 @@
 ** Magit
    #+BEGIN_SRC emacs-lisp
    (use-package magit)
+   #+END_SRC
+** Org
+   #+BEGIN_SRC emacs-lisp
+   (global-set-key (kbd "C-c a") 'org-agenda)
+   (global-set-key (kbd "C-c c") 'org-capture)
+   (setq org-todo-keywords '("TODO" "DONE"))
+   (defvar org-src-fontify-natively t)
+   (setq org-agenda-files (directory-files-recursively "~/org/agenda" "org$"))
+   (setq org-default-notes-file "~/org/agenda/organizer.org")
+   (set-register ?o '(file . "~/org/agenda/organizer.org"))
+
+   (use-package ob-http)
+   (org-babel-do-load-languages 'org-babel-load-languages
+    '(
+      (emacs-lisp . t)
+      (js . t)
+      (python . t)
+      (http . t)))
    #+END_SRC
 ** Ivy
    #+BEGIN_SRC emacs-lisp
@@ -172,48 +195,52 @@
      (setq ivy-use-virtual-buffers t)
      (setq enable-recursive-minibuffers t)
      :bind ("C-c C-r" . ivy-resume))
-     
+
    (use-package swiper
-     :bind ("C-s" . swiper))  
-     
-   (use-package counsel 
+     :bind ("C-s" . swiper))
+
+   (use-package counsel
      :bind (("M-x" . counsel-M-x)
             ("C-x C-f" . counsel-find-file)
+            ("C-x C-b" . counsel-switch-buffer)
             ("C-x C-r" . counsel-recentf)))
 
    (use-package counsel-projectile
      :config
      (counsel-projectile-mode +1))
+
+   (use-package ivy-xref
+     :ensure t
+     :init
+     (when (>= emacs-major-version 27)
+       (setq xref-show-definitions-function #'ivy-xref-show-defs))
+     (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
    #+END_SRC
-# ** Flycheck
-#    #+BEGIN_SRC emacs-lisp
-#    (use-package flycheck
-#      :init
-#      (global-flycheck-mode t))
-#    #+END_SRC
-# ** Company
-#    #+BEGIN_SRC emacs-lisp
-#    (use-package company)
-#    #+END_SRC
 ** Flycheck
    #+BEGIN_SRC emacs-lisp
    (use-package flycheck
      :hook (prog-mode . flycheck-mode)
-     :diminish "✓"
+     :diminish " ✓ "
      :init
      (global-flycheck-mode t)
-     :custom  
+     :custom
      (flycheck-check-syntax-automatically '(save mode-enabled newline))
-     (flycheck-display-errors-delay 0.1)
-     ;;:config
-    ;; (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist)))
-     ;;(setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(javascript-jshint)))
-     ;;(flycheck-add-mode 'javascript-eslint 'js-mode)
-)
+     (flycheck-display-errors-delay 0.1))
+
+   (use-package flycheck-pos-tip
+     :after flycheck)
    #+END_SRC
 ** Company
    #+BEGIN_SRC emacs-lisp
-   (use-package company)
+   (use-package company
+     :init
+     (setq company-minimum-prefix-length 2
+           company-tooltip-limit 14))
+
+   (use-package company-prescient
+     :hook (company-mode . company-prescient-mode)
+     :config
+     (prescient-persist-mode +1))
    #+END_SRC
 ** Treemacs
    #+BEGIN_SRC emacs-lisp
@@ -274,8 +301,7 @@
            (treemacs-git-mode 'deferred))
          (`(t . _)
            (treemacs-git-mode 'simple))))
-           :bind
-           (:map global-map
+     :bind (:map global-map
            ("M-0"       . treemacs-select-window)
            ("C-x t t"   . treemacs)
            ("C-x t B"   . treemacs-bookmark)
@@ -283,20 +309,18 @@
            ("C-x t C-t" . treemacs-find-file)
            ("C-x t M-t" . treemacs-find-tag)))
 
-           (use-package treemacs-evil
-           :after treemacs evil
-           )
+   (use-package treemacs-evil
+     :after treemacs evil)
 
-           (use-package treemacs-projectile
-           :after treemacs projectile
-           )
+   (use-package treemacs-projectile
+     :after treemacs projectile)
 
-           (use-package treemacs-icons-dired
-           :after treemacs dired
-           :config (treemacs-icons-dired-mode))
+   (use-package treemacs-icons-dired
+     :after dired
+     :config (treemacs-icons-dired-mode))
 
-           (use-package treemacs-magit
-             :after treemacs magit)
+   (use-package treemacs-magit
+     :after treemacs magit)
    #+END_SRC
 ** Yasnippet
    #+BEGIN_SRC emacs-lisp
@@ -315,22 +339,27 @@
      (define-key projectile-mode-map (kbd "s-p") #'projectile-find-file)
      (define-key projectile-mode-map (kbd "s-F") #'projectile-ripgrep))
    #+END_SRC
-** Dired narrow
+** restclient
+   #+BEGIN_SRC emacs-lisp
+   (use-package restclient
+     :init
+     (add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode)))
+   #+END_SRC
+** dired-narrow
    #+BEGIN_SRC emacs-lisp
    (use-package dired-narrow
-   :ensure t
-   :bind (:map dired-mode-map ("/" . dired-narrow)))
+     :ensure t
+     :bind (:map dired-mode-map ("/" . dired-narrow)))
    #+END_SRC
-** Vimish fold
+** vimish-fold
    #+BEGIN_SRC emacs-lisp
    (use-package vimish-fold
-   :config (vimish-fold-global-mode 1)
-   )
-   
+     :config (vimish-fold-global-mode 1))
    #+END_SRC
 ** LSP
 *** Core
 **** =lsp-mode=
+     *NOTE:* In order to use ESlint, download ESlint server and configure path below.
      #+BEGIN_SRC emacs-lisp
      (use-package lsp-mode
        :hook ((java-mode
@@ -342,18 +371,18 @@
        (lsp-prefer-flymake nil) ; Use flycheck instead of flymake
        (lsp-enable-symbol-highlighting nil)
        (lsp-signature-auto-activate nil)
+       (lsp-eslint-auto-fix-on-save nil)
        :init
-       (add-to-list 'auto-mode-alist '("\\.ts\\'" . js-mode))
-       (add-to-list 'auto-mode-alist '("\\.tsx\\'" . js-mode))
-       (add-to-list 'auto-mode-alist '("\\.js\\'" . js-mode))
-       (add-to-list 'auto-mode-alist '("\\.jsx\\'" . js-mode))
+       (add-to-list 'auto-mode-alist '("\\.ts\\'" . web-mode))
+       (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+       (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
+       (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
        (setenv "TSSERVER_LOG_FILE" "/tmp/tsserver.log")
-       (setq js-indent-level 2)
-       (setq lsp-eslint-server-command 
-             '("node" 
-               "/home/darius/.emacs.d/vscode/dbaeumer.vscode-eslint-2.0.15/extension/server/out/eslintServer.js" 
-               "--stdio"))
-       )
+       ;;(setq js-indent-level 2)
+       (setq lsp-eslint-server-command
+             '("node"
+               "/home/darius/.emacs.d/vscode/dbaeumer.vscode-eslint-2.0.15/extension/server/out/eslintServer.js"
+               "--stdio")))
      #+END_SRC
 **** =lsp-ui=
      #+BEGIN_SRC emacs-lisp
@@ -367,36 +396,37 @@
      (use-package lsp-ivy
        :requires (lsp-mode ivy))
      #+END_SRC
-**** =company-lsp= 
+**** =company-lsp=
      #+BEGIN_SRC emacs-lisp
      (use-package company-lsp
-       :requires (company)
-       :config 
+       :config
        (push 'company-lsp company-backends)
        (setq company-lsp-async t
              company-lsp-cache-candidates 'auto
              company-lsp-enable-recompletion t))
      #+END_SRC
+**** =dap-mode=
+     #+BEGIN_SRC emacs-lisp
+     (use-package dap-mode
+       :after lsp-mode
+       :config
+       (dap-mode t)
+       (dap-ui-mode t)
+       ;;(use-package dap-java :after (lsp-java))
+       )
+     #+END_SRC
 *** Languages
 **** Web
 ***** =prettier-js=
-      Install =prettier= first.
+      *NOTE:* Install =prettier= first.
       #+BEGIN_SRC emacs-lisp
       (use-package prettier-js
         :delight
-;;        :custom (prettier-js-args '("--print-width" "100"
- ;;                                   "--single-quote" "true"
-  ;;                                  "--trailing-comma" "all"))
+        ;;:custom (prettier-js-args '("--print-width" "100"
+        ;;                            "--single-quote" "true"
+        ;;                            "--trailing-comma" "all"))
   )
-
       #+END_SRC
-# ***** =typescript-mode=
-#       #+BEGIN_SRC emacs-lisp
-#       (use-package typescript-mode
-#         :after (lsp)
-#         :mode ("\\.tsx\\'" . typescript-mode)
-#         :hook(typescript-mode . lsp))
-#       #+END_SRC
 ***** =web-mode=
       #+BEGIN_SRC emacs-lisp
       (use-package web-mode
@@ -416,11 +446,6 @@
         (web-mode-enable-current-element-highlight t)
         (web-mode-markup-indent-offset 2))
        #+END_SRC
-
-        # (add-hook 'web-mode-hook #'(lambda () (enable-minor-mode '("\\.js?\\'" . js-mode))))
-        # (add-hook 'web-mode-hook #'(lambda () (enable-minor-mode '("\\.jsx?\\'" . js-mode))))
-        # (add-hook 'web-mode-hook #'(lambda () (enable-minor-mode '("\\.ts?\\'" . js-mode))))
-        # (add-hook 'web-mode-hook #'(lambda () (enable-minor-mode '("\\.tsx?\\'" . js-mode))))
 ***** =rainbow-mode=
        #+BEGIN_SRC emacs-lisp
        (use-package rainbow-mode
@@ -430,26 +455,16 @@
       #+BEGIN_SRC emacs-lisp
       (use-package json-mode)
       #+END_SRC
-***** =add-node-modules-path=
-      #+BEGIN_SRC emacs-lisp
-      (use-package add-node-modules-path
-        :config
-        (eval-after-load 'js-mode
-          '(add-hook 'js-mode-hook 'add-node-modules-path)))
-      #+END_SRC
-# ***** =js2-mode=
-#       #+BEGIN_SRC emacs-lisp
-#       (use-package js2-mode)
-#       #+END_SRC
 **** Java
-     Java LSP should be installed automatically. If not, install [[https://github.com/eclipse/eclipse.jdt.ls][Eclipse JDT Language Server]] and correct path below.
+     *NOTE:* Java LSP should be installed automatically. If not, install [[https://github.com/eclipse/eclipse.jdt.ls][Eclipse JDT Language Server]] and correct path below.
      #+BEGIN_SRC emacs-lisp
-     (use-package lsp-java 
+     (use-package lsp-java
        :after (lsp)
        :custom (
        (lsp-java-server-install-dir (expand-file-name "eclipse.jdt.ls/server" user-emacs-directory))))
      #+END_SRC
 * Custom Lisp
+  My custom elisp functions.
 ** =eslint-auto.el=
    #+BEGIN_SRC emacs-lisp
    (defun eslint-fix-file ()
