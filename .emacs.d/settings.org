@@ -125,12 +125,14 @@
        "bb" 'counsel-projectile-switch-to-buffer
        "pp" 'projectile-switch-project
        "<SPC>" 'counsel-projectile-find-file
-       "f" 'counsel-projectile-rg
+       "ff" 'counsel-projectile-rg
        "tt" 'treemacs
        "]" 'flycheck-next-error
        "[" 'flycheck-previous-error
        "gp" 'prettier-js
-       "gl" 'lsp-eslint-apply-all-fixes))
+       "gl" 'lsp-eslint-apply-all-fixes
+       "go" 'engine/search-google
+       "w" 'evil-window-next))
 
    (use-package evil
      :init
@@ -145,12 +147,15 @@
      :custom
      (evil-want-C-u-scroll t)
      :config
+     (evil-ex-define-cmd "ls" 'ibuffer)
+     (evil-ex-define-cmd "term" 'shell)
      (evil-mode 1))
 
    (use-package evil-collection
      :after evil
      :config
-     (evil-collection-init 'doc-view))
+     (setq evil-collection-mode-list nil)
+     (evil-collection-init '(doc-view eww ibuffer)))
 
    (use-package evil-surround
      :requires (evil)
@@ -352,6 +357,42 @@
    #+BEGIN_SRC emacs-lisp
    (use-package yasnippet)
    #+END_SRC
+** engine-mode
+   #+BEGIN_SRC emacs-lisp
+   (use-package engine-mode
+     :defer 3
+     :config
+     (setq engine/browser-function 'eww-browse-url)
+     (defengine google
+       "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
+       :keybinding "f")
+
+     (defengine github
+       "https://github.com/search?ref=simplesearch&q=%s"
+       :keybinding "g")
+
+     (defengine google-images
+       "http://www.google.com/images?hl=en&source=hp&biw=1440&bih=795&gbv=2&aq=f&aqi=&aql=&oq=&q=%s"
+       :keybinding "i")
+
+     (defengine google-maps
+       "http://maps.google.com/maps?q=%s"
+       :keybinding "m")
+
+     (defengine stack-overflow
+       "https://stackoverflow.com/search?q=%s"
+       :keybinding "s")
+
+     (defengine youtube
+       "http://www.youtube.com/results?aq=f&oq=&search_query=%s"
+       :keybinding "y")
+
+     (defengine wikipedia
+       "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
+       :keybinding "w"
+       :docstring "Searchin' the wikis.")
+     (engine-mode t))
+   #+END_SRC
 ** Undo-Tree
     #+BEGIN_SRC emacs-lisp
     (use-package undo-tree
@@ -364,19 +405,6 @@
       :ensure nil
       :delight)
     #+END_SRC
-** emacs-dashboard
-   #+BEGIN_SRC emacs-lisp
-   (use-package dashboard
-     :config
-     (dashboard-setup-startup-hook)
-     (setq dashboard-startup-banner 'logo)
-     (setq dashboard-set-heading-icons t)
-     (setq dashboard-set-file-icons t)
-     (setq dashboard-items '((recents   . 5)
-                             (projects . 5)
-                             (bookmarks . 5)
-                             (agenda    . 5))))
-#+END_SRC
 ** restclient
    #+BEGIN_SRC emacs-lisp
    (use-package restclient
