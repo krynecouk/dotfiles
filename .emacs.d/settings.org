@@ -155,7 +155,7 @@
      :after evil
      :config
      (setq evil-collection-mode-list nil)
-     (evil-collection-init '(doc-view eww ibuffer)))
+     (evil-collection-init '(doc-view eww ibuffer dired)))
 
    (use-package evil-surround
      :requires (evil)
@@ -349,9 +349,15 @@
            company-tooltip-limit 14))
 
    (use-package company-prescient
+     :after (company)
      :hook (company-mode . company-prescient-mode)
      :config
      (prescient-persist-mode +1))
+     
+   (use-package company-quickhelp
+     :after (company)
+     :config
+     (company-quickhelp-mode))
    #+END_SRC
 ** Yasnippet
    #+BEGIN_SRC emacs-lisp
@@ -411,11 +417,13 @@
      :init
      (add-to-list 'auto-mode-alist '("\\.http\\'" . restclient-mode)))
    #+END_SRC
-** dired-narrow
+** dired
    #+BEGIN_SRC emacs-lisp
    (use-package dired-narrow
      :ensure t
      :bind (:map dired-mode-map ("/" . dired-narrow)))
+
+   (use-package dired-du)
    #+END_SRC
 ** vimish-fold
    #+BEGIN_SRC emacs-lisp
@@ -529,6 +537,19 @@
        :after (lsp)
        :custom (
        (lsp-java-server-install-dir (expand-file-name "eclipse.jdt.ls/server" user-emacs-directory))))
+     #+END_SRC
+**** Rust
+     #+BEGIN_SRC emacs-lisp
+     (use-package toml-mode)
+
+     (use-package rust-mode
+       :hook (rust-mode . lsp))
+
+     (use-package cargo
+       :hook (rust-mode . cargo-minor-mode))
+
+     (use-package flycheck-rust
+       :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
      #+END_SRC
 * Custom Lisp
   My custom elisp functions.
