@@ -64,6 +64,7 @@
     recentf-max-menu-items 25
     recentf-max-saved-items 25
     electric-indent-mode -1
+    evil-search-module 'evil-search
     scroll-conservatively most-positive-fixnum)
    (cd "~/dev")
    (electric-pair-mode t)
@@ -155,7 +156,7 @@
      :after evil
      :config
      (setq evil-collection-mode-list nil)
-     (evil-collection-init '(doc-view eww ibuffer dired)))
+     (evil-collection-init '(doc-view eww ibuffer dired calendar)))
 
    (use-package evil-surround
      :requires (evil)
@@ -189,18 +190,23 @@
    #+BEGIN_SRC emacs-lisp
    (global-set-key (kbd "C-c a") 'org-agenda)
    (global-set-key (kbd "C-c c") 'org-capture)
+   (global-set-key (kbd "C-c o") 'org-pomodoro)
    (setq org-todo-keywords '("TODO" "DONE"))
    (defvar org-src-fontify-natively t)
    (setq org-agenda-files (directory-files-recursively "~/org/agenda" "org$"))
    (setq org-default-notes-file "~/org/agenda/organizer.org")
    (set-register ?o '(file . "~/org/agenda/organizer.org"))
 
+   (use-package org-pomodoro)
+
    (use-package ob-http)
+   (use-package ob-elixir)
    (org-babel-do-load-languages 'org-babel-load-languages
     '(
       (emacs-lisp . t)
       (js . t)
       (python . t)
+      (elixir . t)
       (http . t)))
    #+END_SRC
 ** Ivy
@@ -434,11 +440,13 @@
 *** Core
 **** =lsp-mode=
      *NOTE:* In order to use ESlint, download ESlint server and configure path below.
+     *NOTE:* In order to use Elixir, clone =elixir-lsp= (~git clone https://github.com/elixir-lsp/elixir-ls.git~) and run ~mix deps.get~ and ~mix elixir_ls.release~.
      #+BEGIN_SRC emacs-lisp
      (use-package lsp-mode
        :hook ((java-mode
                js-mode
                prog-mode
+               elixir-mode
                web-mode) . lsp)
        :commands (lsp)
        :custom
@@ -451,6 +459,7 @@
        (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
        (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
        (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+       (add-to-list 'exec-path "/home/darius/dev/elixir-ls/release")
        (setenv "TSSERVER_LOG_FILE" "/tmp/tsserver.log")
        ;;(setq js-indent-level 2)
        (setq lsp-eslint-server-command
@@ -537,6 +546,10 @@
        :after (lsp)
        :custom (
        (lsp-java-server-install-dir (expand-file-name "eclipse.jdt.ls/server" user-emacs-directory))))
+     #+END_SRC
+**** Elixir
+     #+BEGIN_SRC emacs-lisp
+     (use-package elixir-mode)
      #+END_SRC
 **** Rust
      #+BEGIN_SRC emacs-lisp
