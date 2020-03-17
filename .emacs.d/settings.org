@@ -61,8 +61,8 @@
     display-line-numbers 'relative
     display-line-numbers-current-absolute nil
     display-line-numbers-grow-only t
-    recentf-max-menu-items 25
-    recentf-max-saved-items 25
+    recentf-max-menu-items 125
+    recentf-max-saved-items 125
     electric-indent-mode -1
     evil-search-module 'evil-search
     scroll-conservatively most-positive-fixnum)
@@ -78,6 +78,7 @@
    (fset 'yes-or-no-p 'y-or-n-p)
    (recentf-mode 1)
    (diminish 'visual-line-mode)
+   (global-auto-revert-mode t)
    (add-to-list 'default-frame-alist '(fullscreen . maximized))
    #+END_SRC
 * Visuals
@@ -121,8 +122,12 @@
      (evil-leader/set-leader "<SPC>")
      (evil-leader/set-key
        "dd" 'lsp-find-definition
+       "pd" 'lsp-ui-peek-find-definition
        "ii" 'lsp-find-implementation
+       "pi" 'lsp-ui-peek-find-implementation
        "rr" 'lsp-find-references
+       "pr" 'lsp-ui-peek-find-references
+       "ss" 'lsp-ui-peek-find-workspace-symbol
        "bb" 'counsel-projectile-switch-to-buffer
        "pp" 'projectile-switch-project
        "<SPC>" 'counsel-projectile-find-file
@@ -133,6 +138,8 @@
        "gp" 'prettier-js
        "gl" 'lsp-eslint-apply-all-fixes
        "go" 'engine/search-google
+       "oi" 'org-indent-region
+       "ipp" 'indent-pp-sexp
        "w" 'evil-window-next))
 
    (use-package evil
@@ -156,7 +163,7 @@
      :after evil
      :config
      (setq evil-collection-mode-list nil)
-     (evil-collection-init '(doc-view eww ibuffer dired calendar)))
+     (evil-collection-init '(doc-view eww ibuffer dired calendar company)))
 
    (use-package evil-surround
      :requires (evil)
@@ -198,7 +205,6 @@
    (set-register ?o '(file . "~/org/agenda/organizer.org"))
 
    (use-package org-pomodoro)
-
    (use-package ob-http)
    (use-package ob-elixir)
    (org-babel-do-load-languages 'org-babel-load-languages
@@ -207,6 +213,7 @@
       (js . t)
       (python . t)
       (elixir . t)
+      (plantuml . t)
       (http . t)))
    #+END_SRC
 ** Ivy
@@ -417,6 +424,17 @@
       :ensure nil
       :delight)
     #+END_SRC
+** PlantUML
+   #+BEGIN_SRC emacs-lisp
+   (use-package plantuml-mode
+     :mode (("\\.puml$" . plantuml-mode)
+	        ("\\.plantuml$" . plantuml-mode))
+     :config
+     (setq plantuml-jar-path (expand-file-name "~/.emacs.d/plantuml.jar"))
+     (setq org-plantuml-jar-path (expand-file-name "~/.emacs.d/plantuml.jar"))
+     (setq plantuml-default-exec-mode 'jar)
+     )
+   #+END_SRC
 ** restclient
    #+BEGIN_SRC emacs-lisp
    (use-package restclient
@@ -430,6 +448,10 @@
      :bind (:map dired-mode-map ("/" . dired-narrow)))
 
    (use-package dired-du)
+   #+END_SRC
+** HTMLize
+   #+BEGIN_SRC emacs-lisp
+   (use-package htmlize)
    #+END_SRC
 ** vimish-fold
    #+BEGIN_SRC emacs-lisp
@@ -462,10 +484,11 @@
        (add-to-list 'exec-path "/home/darius/dev/elixir-ls/release")
        (setenv "TSSERVER_LOG_FILE" "/tmp/tsserver.log")
        ;;(setq js-indent-level 2)
-       (setq lsp-eslint-server-command
-             '("node"
-               "/home/darius/.emacs.d/vscode/dbaeumer.vscode-eslint-2.0.15/extension/server/out/eslintServer.js"
-               "--stdio")))
+       ;;(setq lsp-eslint-server-command
+       ;;      '("node"
+       ;;        "/home/darius/.emacs.d/vscode/dbaeumer.vscode-eslint-2.0.15/extension/server/out/eslintServer.js"
+       ;;        "--stdio"))
+               )
      #+END_SRC
 **** =lsp-ui=
      #+BEGIN_SRC emacs-lisp
@@ -505,10 +528,10 @@
       #+BEGIN_SRC emacs-lisp
       (use-package prettier-js
         :delight
-        ;;:custom (prettier-js-args '("--print-width" "100"
-        ;;                            "--single-quote" "true"
-        ;;                            "--trailing-comma" "all"))
-  )
+        :custom (prettier-js-args '("--print-width" "100"
+                                    "--single-quote" "true"
+                                    "--trailing-comma" "none"
+                                    "--semi" "false")))
       #+END_SRC
 ***** =web-mode=
       #+BEGIN_SRC emacs-lisp
@@ -549,7 +572,11 @@
      #+END_SRC
 **** Elixir
      #+BEGIN_SRC emacs-lisp
-     (use-package elixir-mode)
+     (use-package elixir-mode
+       :hook (elixir-mode . alchemist-mode))
+
+     (use-package alchemist
+       :hook (alchemist-iex-mode . company-mode))
      #+END_SRC
 **** Rust
      #+BEGIN_SRC emacs-lisp
