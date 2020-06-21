@@ -10,8 +10,8 @@
    #+END_SRC
 ** =auto-save-files=
    #+BEGIN_SRC emacs-lisp
-   (setq auto-save-default nil)
-   ;;(setq auto-save-file-name-transforms `((".*" "~/.emacs-saves/" t)))
+   ;;(setq auto-save-default nil)
+   (setq auto-save-file-name-transforms `((".*" "~/.emacs-saves/" t)))
    #+END_SRC
 ** =backup-files=
    #+BEGIN_SRC emacs-lisp
@@ -85,7 +85,7 @@
 ** Fonts
    *NOTE:* install "Source Code Pro Medium" in your system.
    #+BEGIN_SRC emacs-lisp
-   (set-face-attribute 'default nil :font "Source Code Pro Medium" :height 110)
+   (set-face-attribute 'default nil :font "Source Code Pro Medium" :height 100)
    (set-fontset-font t 'latin "Noto Sans")
    #+END_SRC
 ** Icons
@@ -96,19 +96,25 @@
      (all-the-icons-scale-factor 1.0))
    #+END_SRC
 ** Theme
-   #+BEGIN_SRC emacs-lisp
-   (load-theme 'deeper-blue t)
-   (let ((custom--inhibit-theme-enable nil))
-   (custom-theme-set-faces
-    'deeper-blue
-    '(mode-line ((t (:background "gray75" :foreground "black" :box (:style nil)))))
-    '(mode-line-buffer-id ((t (:weight bold :background nil :foreground "blue4"))))
-    '(mode-line-inactive ((t (:background "gray40" :foreground "black" :box (:style nil)))))
-    '(region ((t (:background "gray40"))))
-    '(cursor ((t (:background "#ff4f00"))))
-    )
+*** Modus
+    #+BEGIN_SRC emacs-lisp
+    (use-package modus-operandi-theme)
+    (use-package modus-vivendi-theme)
+    #+END_SRC
+*** Deeper Blue
+    #+BEGIN_SRC emacs-lisp
+    (load-theme 'deeper-blue t)
+    (let ((custom--inhibit-theme-enable nil))
+    (custom-theme-set-faces
+     'deeper-blue
+     '(mode-line ((t (:background "gray75" :foreground "black" :box (:style nil)))))
+     '(mode-line-buffer-id ((t (:weight bold :background nil :foreground "blue4"))))
+     '(mode-line-inactive ((t (:background "gray40" :foreground "black" :box (:style nil)))))
+     '(region ((t (:background "gray40"))))
+     '(cursor ((t (:background "#ff4f00"))))
+     )
    )
-   #+END_SRC
+    #+END_SRC
 * Packages
 ** Evil
    #+BEGIN_SRC emacs-lisp
@@ -128,6 +134,7 @@
        "rr" 'lsp-find-references
        "pr" 'lsp-ui-peek-find-references
        "ss" 'lsp-ui-peek-find-workspace-symbol
+       "aa" 'lsp-execute-code-action
        "bb" 'counsel-projectile-switch-to-buffer
        "pp" 'projectile-switch-project
        "<SPC>" 'counsel-projectile-find-file
@@ -140,6 +147,7 @@
        "go" 'engine/search-google
        "oi" 'org-indent-region
        "ipp" 'indent-pp-sexp
+       "ai" 'lsp-java-add-import
        "w" 'evil-window-next))
 
    (use-package evil
@@ -366,15 +374,6 @@
      :hook (company-mode . company-prescient-mode)
      :config
      (prescient-persist-mode +1))
-     
-   (use-package company-quickhelp
-     :after (company)
-     :config
-     (company-quickhelp-mode))
-   #+END_SRC
-** Yasnippet
-   #+BEGIN_SRC emacs-lisp
-   (use-package yasnippet)
    #+END_SRC
 ** engine-mode
    #+BEGIN_SRC emacs-lisp
@@ -413,17 +412,17 @@
      (engine-mode t))
    #+END_SRC
 ** Undo-Tree
-    #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
     (use-package undo-tree
       :ensure nil
       :delight)
-    #+END_SRC
+   #+END_SRC
 ** Eldoc
-    #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
     (use-package eldoc
       :ensure nil
       :delight)
-    #+END_SRC
+   #+END_SRC
 ** PlantUML
    #+BEGIN_SRC emacs-lisp
    (use-package plantuml-mode
@@ -461,7 +460,6 @@
 ** LSP
 *** Core
 **** =lsp-mode=
-     *NOTE:* In order to use ESlint, download ESlint server and configure path below.
      *NOTE:* In order to use Elixir, clone =elixir-lsp= (~git clone https://github.com/elixir-lsp/elixir-ls.git~) and run ~mix deps.get~ and ~mix elixir_ls.release~.
      #+BEGIN_SRC emacs-lisp
      (use-package lsp-mode
@@ -482,13 +480,7 @@
        (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
        (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
        (add-to-list 'exec-path "/home/darius/dev/elixir-ls/release")
-       (setenv "TSSERVER_LOG_FILE" "/tmp/tsserver.log")
-       ;;(setq js-indent-level 2)
-       ;;(setq lsp-eslint-server-command
-       ;;      '("node"
-       ;;        "/home/darius/.emacs.d/vscode/dbaeumer.vscode-eslint-2.0.15/extension/server/out/eslintServer.js"
-       ;;        "--stdio"))
-               )
+       (setenv "TSSERVER_LOG_FILE" "/tmp/tsserver.log"))
      #+END_SRC
 **** =lsp-ui=
      #+BEGIN_SRC emacs-lisp
@@ -510,16 +502,6 @@
        (setq company-lsp-async t
              company-lsp-cache-candidates 'auto
              company-lsp-enable-recompletion t))
-     #+END_SRC
-**** =dap-mode=
-     #+BEGIN_SRC emacs-lisp
-     (use-package dap-mode
-       :after lsp-mode
-       :config
-       (dap-mode t)
-       (dap-ui-mode t)
-       ;;(use-package dap-java :after (lsp-java))
-       )
      #+END_SRC
 *** Languages
 **** Web
@@ -551,13 +533,13 @@
         (web-mode-comment-style 2)
         (web-mode-enable-current-element-highlight t)
         (web-mode-markup-indent-offset 2))
-       #+END_SRC
+      #+END_SRC
 ***** =rainbow-mode=
-       #+BEGIN_SRC emacs-lisp
+      #+BEGIN_SRC emacs-lisp
        (use-package rainbow-mode
          :delight
          :hook (web-mode . rainbow-mode))
-       #+END_SRC
+      #+END_SRC
 ***** =json-mode=
       #+BEGIN_SRC emacs-lisp
       (use-package json-mode)
@@ -583,13 +565,14 @@
      (use-package toml-mode)
 
      (use-package rust-mode
-       :hook (rust-mode . lsp))
+        :hook (rust-mode . lsp)
+        :config (setq rust-format-on-save t))
 
      (use-package cargo
-       :hook (rust-mode . cargo-minor-mode))
+        :hook (rust-mode . cargo-minor-mode))
 
      (use-package flycheck-rust
-       :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+        :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
      #+END_SRC
 * Custom Lisp
   My custom elisp functions.
