@@ -99,21 +99,8 @@
 *** Modus
     #+BEGIN_SRC emacs-lisp
     (use-package modus-operandi-theme)
-    (use-package modus-vivendi-theme)
-    #+END_SRC
-*** Deeper Blue
-    #+BEGIN_SRC emacs-lisp
-    (load-theme 'deeper-blue t)
-    (let ((custom--inhibit-theme-enable nil))
-    (custom-theme-set-faces
-     'deeper-blue
-     '(mode-line ((t (:background "gray75" :foreground "black" :box (:style nil)))))
-     '(mode-line-buffer-id ((t (:weight bold :background nil :foreground "blue4"))))
-     '(mode-line-inactive ((t (:background "gray40" :foreground "black" :box (:style nil)))))
-     '(region ((t (:background "gray40"))))
-     '(cursor ((t (:background "#ff4f00"))))
-     )
-   )
+    (use-package modus-vivendi-theme
+      :config (load-theme 'modus-vivendi t))
     #+END_SRC
 * Packages
 ** Evil
@@ -375,6 +362,13 @@
      :config
      (prescient-persist-mode +1))
    #+END_SRC
+** which-key
+   #+BEGIN_SRC emacs-lisp
+   (use-package which-key
+     :hook (lsp-mode . lsp-enable-which-key-integration)  
+     :config
+     (which-key-mode))
+   #+END_SRC
 ** engine-mode
    #+BEGIN_SRC emacs-lisp
    (use-package engine-mode
@@ -467,6 +461,7 @@
                js-mode
                prog-mode
                elixir-mode
+               rust-mode
                web-mode) . lsp)
        :commands (lsp)
        :custom
@@ -474,6 +469,7 @@
        (lsp-enable-symbol-highlighting nil)
        (lsp-signature-auto-activate nil)
        (lsp-eslint-auto-fix-on-save nil)
+       (lsp-rust-server 'rust-analyzer) ; https://rust-analyzer.github.io/manual.html#installation
        :init
        (add-to-list 'auto-mode-alist '("\\.ts\\'" . web-mode))
        (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
@@ -566,7 +562,8 @@
 
      (use-package rust-mode
         :hook (rust-mode . lsp)
-        :config (setq rust-format-on-save t))
+        :config 
+        (setq rust-format-on-save t))
 
      (use-package cargo
         :hook (rust-mode . cargo-minor-mode))
@@ -576,18 +573,21 @@
      #+END_SRC
 * Custom Lisp
   My custom elisp functions.
-** =eslint-auto.el=
+** =deeper-blue-custom-theme=
    #+BEGIN_SRC emacs-lisp
-   (defun eslint-fix-file ()
+   (defun load-theme-deeper-blue ()
      (interactive)
-     (message "eslint --fixing the file" (buffer-file-name))
-     (shell-command (concat "eslint --fix " (buffer-file-name))))
+     (load-theme 'deeper-blue t)
+     (let ((custom--inhibit-theme-enable nil))
+       (custom-theme-set-faces
+        'deeper-blue
+        '(mode-line ((t (:background "gray75" :foreground "black" :box (:style nil)))))
+        '(mode-line-buffer-id ((t (:weight bold :background nil :foreground "blue4"))))
+        '(mode-line-inactive ((t (:background "gray40" :foreground "black" :box (:style nil)))))
+        '(region ((t (:background "gray40"))))
+        '(cursor ((t (:background "#ff4f00"))))
+        )
+       )
+     )
    #+END_SRC
-
-** =prettier-eslint-auto.el=
-   #+BEGIN_SRC emacs-lisp
-   (defun prettier-eslint-fix-file ()
-     (interactive)
-     (message "prettier-eslint --fixing the file" (buffer-file-name))
-     (shell-command (concat "prettier-eslint --write " (buffer-file-name))))
-   #+END_SRC
+   
