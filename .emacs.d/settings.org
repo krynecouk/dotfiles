@@ -110,6 +110,7 @@
      (setq evil-want-integration t)
      (setq evil-want-keybinding nil)
      (setq evil-leader/in-all-states t)
+     (setq evil-respect-visual-line-mode t)
      :config
      (global-evil-leader-mode)
      (evil-leader/set-leader "<SPC>")
@@ -198,6 +199,7 @@
    (setq org-agenda-files (directory-files-recursively "~/org/agenda" "org$"))
    (setq org-default-notes-file "~/org/agenda/organizer.org")
    (set-register ?o '(file . "~/org/agenda/organizer.org"))
+   (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
    (use-package org-pomodoro)
    (use-package ob-http)
