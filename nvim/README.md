@@ -1,17 +1,21 @@
-## NVIM configuration
+# Personal Vim Configuration
 
-### How to install plugins
+![Schreenshot of configured Neovim](screenshot/nvim.png)
+
+## Installation
+
+`nvim +PlugClean`
 
 `nvim +PlugInstall`
 
-### How to autoremove plugins
-`nvim +PlugClean`
-
-### How to change theme
-`nvim ~/config/nvim/visuals.vim`
-
-### How to install new plugin
 `nvim ~/config/nvim/plugins.vim`
 
-### How to configure plugin
+## Configuration
+
+### Visuals
+
+`nvim ~/config/nvim/visuals.vim`
+
+### Plugins
+
 `nvim ~/config/nvim/plugin/<plugin>`
