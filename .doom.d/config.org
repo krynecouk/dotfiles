@@ -1,0 +1,75 @@
+#+TITLE: Emacs Configuration
+#+AUTHOR: Darius Kryszczuk
+#+EMAIL: darius.kryszczuk@gmail.com
+
+* Prerequisites
+- Git 2.23+
+- Emacs 26.1+ (27 is recommended) with GNUTLS support
+- [[https://github.com/BurntSushi/ripgrep][ripgrep]] 11.0+
+- GNU find
+- OPTIONAL: [[https://github.com/sharkdp/fd][fd]] 7.3.0+ (improves file indexing performance for some commands)
+- [[https://www.jetbrains.com/lp/mono/][JetBrains Mono]] font
+- CMake 3.10.0+ (vterm)
+
+* Defaults
+#+BEGIN_SRC emacs-lisp
+(setq
+ user-full-name "Darius Kryszczuk"
+ user-mail-address "darius.kryszczuk@gmail.com"
+ display-line-numbers-type 'relative
+ display-line-numbers-current-absolute nil)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+#+END_SRC
+
+* Bindings
+#+BEGIN_SRC emacs-lisp
+(map! :leader :prefix ("t" . "toggle")
+      :desc "Treemacs" "t" #'+treemacs/toggle
+      :desc "Undo Tree" "u" #'undo-tree-mode)
+
+(map! :leader :prefix ("s" . "search")
+      :desc "Google" "g" #'engine/search-google)
+
+(map! :leader :prefix ("c" . "code")
+      :desc "Next error" "]" #'flycheck-next-error
+      :desc "Previous error" "[" #'flycheck-previous-error)
+
+(map! :map evil-normal-state-map
+      "g]" #'flycheck-next-error
+      "g[" #'flycheck-previous-error
+      "M-k" #'drag-stuff-up
+      "M-j" #'drag-stuff-down)
+#+END_SRC
+
+* Visuals
+#+BEGIN_SRC emacs-lisp
+(setq
+ doom-themes-treemacs-theme "Default"
+ doom-font (font-spec :family "JetBrains Mono" :size 13)
+ +doom-dashboard-banner-dir (concat doom-private-dir "banners/")
+ doom-modeline-major-mode-color-icon t)
+#+END_SRC
+
+* Packages
+** Undo Tree
+#+BEGIN_SRC emacs-lisp
+(use-package! undo-tree
+  :defer t
+  :custom
+  (undo-tree-visualizer-diff t)
+  (undo-tree-visualizer-timestamps t))
+#+END_SRC
+** Rustic
+#+BEGIN_SRC emacs-lisp
+(use-package! rustic
+  :hook (rustic-mode-hook . format-all-mode))
+#+END_SRC
+** Engine Mode
+#+BEGIN_SRC emacs-lisp
+(use-package! engine-mode
+     :config
+     (setq engine/browser-function 'eww-browse-url)
+     (defengine google
+       "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s")
+     (engine-mode t))
+#+END_SRC
