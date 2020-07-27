@@ -1,7 +1,0 @@
-* EMACS configuration
-
-** Prerequisities
-- Emacs ^27
-
-** Help
-- C-h
