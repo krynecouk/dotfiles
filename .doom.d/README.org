@@ -1,0 +1,17 @@
+* Personal Doom Emacs configuration
+
+[[file:screenshot/doom.png][Screenshot of Doom Emacs]]
+
+** Prerequisites
+- Git 2.23+
+- Emacs 26.1+ (27 is recommended) with GNUTLS support
+- [[https://github.com/BurntSushi/ripgrep][ripgrep]] 11.0+
+- GNU find
+- OPTIONAL: [[https://github.com/sharkdp/fd][fd]] 7.3.0+ (improves file indexing performance for some commands)
+- [[https://www.jetbrains.com/lp/mono/][JetBrains Mono]] font
+- CMake 3.10.0+ (vterm)
+
+** Installation
+#+BEGIN_SRC shell
+cp -r .doom.d ~/
+#+END_SRC
