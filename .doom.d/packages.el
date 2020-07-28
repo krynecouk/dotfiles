@@ -8,6 +8,4 @@
 ;; (package! builtin-package :disable t)
 
 (package! paren)
-(package! org-pomodoro)
-(package! ob-http)
-(package! engine-mode)
+(package! engine-mode :recipe (:branch "main"))

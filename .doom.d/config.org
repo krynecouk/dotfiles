@@ -3,13 +3,18 @@
 #+EMAIL: darius.kryszczuk@gmail.com
 
 * Prerequisites
+** Mandatory
 - Git 2.23+
 - Emacs 26.1+ (27 is recommended) with GNUTLS support
 - [[https://github.com/BurntSushi/ripgrep][ripgrep]] 11.0+
-- GNU find
-- OPTIONAL: [[https://github.com/sharkdp/fd][fd]] 7.3.0+ (improves file indexing performance for some commands)
 - [[https://www.jetbrains.com/lp/mono/][JetBrains Mono]] font
+** Optional
+- [[https://github.com/sharkdp/fd][fd]] 7.3.0+ (improves file indexing performance for some commands)
 - CMake 3.10.0+ (vterm)
+- [[https://github.com/koalaman/shellcheck][shellcheck]]
+- [[https://github.com/markedjs/marked][marked]]
+- [[https://github.com/beautify-web/js-beautify][js-beautify]]
+- [[https://github.com/stylelint/stylelint][stylelint]]
 
 * Defaults
 #+BEGIN_SRC emacs-lisp
