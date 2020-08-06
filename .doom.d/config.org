@@ -146,6 +146,7 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
   (set-popup-rule! "*eww"
     :size 100
     :side 'right
+    :ttl nil
     :quit 'is-popup)
   (add-hook 'eww-after-render-hook
             (lambda ()
@@ -200,7 +201,7 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
 (defun +eww/rename ()
   "Rename eww buffer to be the same as the current url."
   (interactive)
-  (rename-buffer (eww-current-url))
+  (xah-rename-eww-buffer)
   )
 #+END_SRC
 
@@ -211,4 +212,22 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
   (+popup/raise-to-split-window)
   (+eww/rename)
   )
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;;;###autoload
+(defun xah-rename-eww-buffer ()
+  "Rename `eww-mode' buffer so sites open in new page.
+URL `http://ergoemacs.org/emacs/emacs_eww_web_browser.html'
+Version 2017-11-10"
+  (when (eq major-mode 'eww-mode )
+    (let* ((title (plist-get eww-data :title))
+           (name (concat "*eww " title "*")))
+      (if (get-buffer name)
+          (progn
+            (kill-buffer (current-buffer))
+            (pop-to-buffer (get-buffer name)))
+        (if title
+            (rename-buffer name t)
+          (rename-buffer "*eww*" t))))))
 #+END_SRC
