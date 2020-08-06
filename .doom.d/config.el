@@ -2,7 +2,9 @@
  user-full-name "Darius Kryszczuk"
  user-mail-address "darius.kryszczuk@gmail.com"
  display-line-numbers-type 'relative
- display-line-numbers-current-absolute nil)
+ display-line-numbers-current-absolute nil
+ doom-scratch-initial-major-mode 'emacs-lisp-mode
+ )
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 (map! :leader :prefix ("t" . "toggle")
@@ -11,7 +13,7 @@
       :desc "Calc" "c" #'calc)
 
 (map! :leader :prefix ("s" . "search")
-      :desc "Google" "g" #'engine/search-google)
+      :desc "Google" "g" #'eww)
 
 (map! :leader :prefix ("c" . "code")
       :desc "Next error" "]" #'flycheck-next-error
@@ -20,14 +22,26 @@
 (map! :leader :prefix ("o" . "open")
       :desc "Eww" "w" #'eww)
 
-(map! :map evil-normal-state-map
-      "g]" #'flycheck-next-error
-      "g[" #'flycheck-previous-error
-      "M-k" #'drag-stuff-up
-      "M-j" #'drag-stuff-down
-      "C-c a" #'org-agenda
-      "C-c c" #'org-capture
-      "C-c o" #'org-pomodoro)
+(map!
+ "M-k" #'drag-stuff-up
+ "M-j" #'drag-stuff-down
+ "C-c a" #'org-agenda
+ "C-c c" #'org-capture
+ "C-c o" #'org-pomodoro
+ (:prefix "g"
+   :n "]" #'flycheck-next-error
+   :n "[" #'flycheck-previous-error
+   )
+  )
+
+(map!
+ :map eww-mode-map
+ (:prefix "g"
+   :n "r" #'eww-reload
+   :n "R" #'+eww/rename
+   :n "+" #'+eww/raise
+   )
+ )
 
 (setq
  doom-themes-treemacs-theme "Default"
@@ -42,6 +56,7 @@
 (use-package! org
   :config
   (setq org-directory (expand-file-name "~/dev/org"))
+  (setq browse-url-browser-function 'eww-browse-url)
 
   (setq org-inbox (expand-file-name "inbox.org" org-directory)
         org-projects (expand-file-name "projects.org" org-directory)
@@ -69,16 +84,17 @@
 (after! org
            (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
-           (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)")
+           (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "CANCELLED(c)" "DONE(d)")
                                      (sequence "[ ](T)" "|" "[X](D)")
                                      (sequence "POMODORO(o)" "|" "POMODOROFF(f)")))
 
            (setq org-todo-keyword-faces
-                 '(("TODO" . "#fe8a71")
-                   ("WAITING" . "#f6cd61")
-                   ("POMODORO" . "#fe4a49")
-                   ("POMODOROFF" . "#0e9aa7")
-                   ("DONE" . "#0e9aa7")))
+                 '(("TODO" . "#f3722c")
+                   ("WAITING" . "#f9c74f")
+                   ("CANCELLED" . "#577590")
+                   ("POMODORO" . "#f94144")
+                   ("POMODOROFF" . "#43aa8b")
+                   ("DONE" . "#43aa8b")))
            )
 
 (use-package! undo-tree
@@ -89,12 +105,13 @@
 
 (use-package! eww
   :config
-  (setq eww-search-prefix "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s")
-  )
+  (setq eww-search-prefix "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"))
+
 (after! eww
   (set-popup-rule! "*eww"
     :size 100
-    :side 'right)
+    :side 'right
+    :quit 'is-popup)
   (add-hook 'eww-after-render-hook
             (lambda ()
               (setq-local header-line-format nil)
@@ -106,9 +123,43 @@
 (use-package! rustic
   :hook (rustic-mode-hook . format-all-mode))
 
-(use-package! engine-mode
-     :config
-     (setq engine/browser-function 'eww-browse-url)
-     (defengine google
-       "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s")
-     (engine-mode t))
+(defun is-popup (window)
+  "Returns non-nil if WINDOW is a popup."
+  (if (+popup-window-p window) t nil)
+  )
+
+(defun is-popup-interactive (&optional window)
+  "Returns non-nil if WINDOW (or selected window if nil) is a popup."
+  (interactive)
+  (let ((window (or window (selected-window))))
+    (message "Is popup -> %s" (if (is-popup window) "True" "False"))
+    )
+  )
+
+(defun +popup/raise-to-split-window ()
+  "Raise popup to vertically splitted window."
+  (interactive)
+  (unless (is-popup (selected-window))
+    (user-error "Cannot raise a non-popup window")
+    )
+  (other-window 1)
+  (when (< (length (doom-visible-windows)) 2)
+    (+evil-window-vsplit-a)
+    )
+  (select-window (car (last (doom-visible-windows))))
+  (+popup/other)
+  (+popup/raise (selected-window))
+  )
+
+(defun +eww/rename ()
+  "Rename eww buffer to be the same as the current url."
+  (interactive)
+  (rename-buffer (eww-current-url))
+  )
+
+(defun +eww/raise ()
+  "Raise eww buffer and rename it to the current url."
+  (interactive)
+  (+popup/raise-to-split-window)
+  (+eww/rename)
+  )

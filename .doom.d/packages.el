@@ -8,4 +8,3 @@
 ;; (package! builtin-package :disable t)
 
 (package! paren)
-(package! engine-mode :recipe (:branch "main"))
