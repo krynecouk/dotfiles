@@ -23,12 +23,26 @@
  user-mail-address "darius.kryszczuk@gmail.com"
  display-line-numbers-type 'relative
  display-line-numbers-current-absolute nil
- doom-scratch-initial-major-mode 'emacs-lisp-mode
- )
+ doom-scratch-initial-major-mode 'emacs-lisp-mode)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+END_SRC
 
 * Bindings
+** Global
+#+BEGIN_SRC emacs-lisp
+(map!
+ "M-k" #'drag-stuff-up
+ "M-j" #'drag-stuff-down
+ "C-c a" #'org-agenda
+ "C-c c" #'org-capture
+ "C-c o" #'org-pomodoro
+ (:prefix "g"
+   :n "]" #'flycheck-next-error
+   :n "[" #'flycheck-previous-error
+   )
+  )
+#+END_SRC
+** Leader
 #+BEGIN_SRC emacs-lisp
 (map! :leader :prefix ("t" . "toggle")
       :desc "Treemacs" "t" #'+treemacs/toggle
@@ -44,27 +58,21 @@
 
 (map! :leader :prefix ("o" . "open")
       :desc "Eww" "w" #'eww)
-
+#+END_SRC
+** Mode
+#+BEGIN_SRC emacs-lisp
 (map!
- "M-k" #'drag-stuff-up
- "M-j" #'drag-stuff-down
- "C-c a" #'org-agenda
- "C-c c" #'org-capture
- "C-c o" #'org-pomodoro
- (:prefix "g"
-   :n "]" #'flycheck-next-error
-   :n "[" #'flycheck-previous-error
-   )
-  )
-
-(map!
- :map eww-mode-map
- (:prefix "g"
+ ;;; eww
+ (:after eww
+  :map eww-mode-map
+  :n "q" (lambda ()
+           "Quit window only if popup."
+           (interactive)
+           (while (+popup--p) (+popup/quit-window)))
+  (:prefix "g"
    :n "r" #'eww-reload
    :n "R" #'+eww/rename
-   :n "+" #'+eww/raise
-   )
- )
+   :n "+" #'+eww/raise)))
 #+END_SRC
 
 * Visuals
@@ -76,8 +84,7 @@
  +doom-dashboard-banner-dir (concat doom-private-dir "banners/")
  doom-modeline-height 22
  doom-modeline-major-mode-color-icon t
- all-the-icons-scale-factor 1
- )
+ all-the-icons-scale-factor 1)
 #+END_SRC
 
 * Packages
@@ -125,8 +132,7 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
                    ("CANCELLED" . "#577590")
                    ("POMODORO" . "#f94144")
                    ("POMODOROFF" . "#43aa8b")
-                   ("DONE" . "#43aa8b")))
-           )
+                   ("DONE" . "#43aa8b"))))
 #+END_SRC
 ** Undo Tree
 #+BEGIN_SRC emacs-lisp
@@ -147,14 +153,12 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
     :size 100
     :side 'right
     :ttl nil
-    :quit 'is-popup)
+    :quit #'+popup--p)
   (add-hook 'eww-after-render-hook
             (lambda ()
               (setq-local header-line-format nil)
               (doom-mark-buffer-as-real-h)
-              (persp-add-buffer (current-buffer))
-              ))
-  )
+              (persp-add-buffer (current-buffer)))))
 #+END_SRC
 ** Rustic
 #+BEGIN_SRC emacs-lisp
@@ -163,71 +167,56 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
 #+END_SRC
 
 * Custom Elisp
+My custom elisp functions.
+** Popup
 #+BEGIN_SRC emacs-lisp
-(defun is-popup (window)
-  "Returns non-nil if WINDOW is a popup."
-  (if (+popup-window-p window) t nil)
-  )
+(defun +popup--p (&optional window)
+  "Returns t when WINDOW (or selected window) is a popup."
+  (when (+popup-window-p (or window (selected-window))) t))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(defun is-popup-interactive (&optional window)
-  "Returns non-nil if WINDOW (or selected window if nil) is a popup."
+(defun +popup/p ()
+  "Returns t when selected window is a popup."
   (interactive)
-  (let ((window (or window (selected-window))))
-    (message "Is popup -> %s" (if (is-popup window) "True" "False"))
-    )
-  )
+  (message "Is popup -> %s" (if (+popup--p) "True" "False")))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (defun +popup/raise-to-split-window ()
   "Raise popup to vertically splitted window."
   (interactive)
-  (unless (is-popup (selected-window))
-    (user-error "Cannot raise a non-popup window")
-    )
+  (unless (+popup--p)
+    (user-error "Cannot raise a non-popup window"))
   (other-window 1)
   (when (< (length (doom-visible-windows)) 2)
-    (+evil-window-vsplit-a)
-    )
+    (+evil-window-vsplit-a))
   (select-window (car (last (doom-visible-windows))))
   (+popup/other)
-  (+popup/raise (selected-window))
-  )
+  (+popup/raise (selected-window)))
 #+END_SRC
 
+** Eww
 #+BEGIN_SRC emacs-lisp
 (defun +eww/rename ()
-  "Rename eww buffer to be the same as the current url."
+  "Rename eww buffer. Current page title as a default."
   (interactive)
-  (xah-rename-eww-buffer)
-  )
+  (let ((name (read-from-minibuffer "New name: " (+eww/page-title))))
+       (rename-buffer name t)))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (defun +eww/raise ()
-  "Raise eww buffer and rename it to the current url."
+  "Raise eww buffer and rename it to the page title."
   (interactive)
   (+popup/raise-to-split-window)
-  (+eww/rename)
-  )
+  (rename-buffer (+eww/page-title) t))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-;;;###autoload
-(defun xah-rename-eww-buffer ()
-  "Rename `eww-mode' buffer so sites open in new page.
-URL `http://ergoemacs.org/emacs/emacs_eww_web_browser.html'
-Version 2017-11-10"
+(defun +eww/page-title ()
+  "Returns web page title or nil. Print as side effect."
+  (interactive)
   (when (eq major-mode 'eww-mode )
-    (let* ((title (plist-get eww-data :title))
-           (name (concat "*eww " title "*")))
-      (if (get-buffer name)
-          (progn
-            (kill-buffer (current-buffer))
-            (pop-to-buffer (get-buffer name)))
-        (if title
-            (rename-buffer name t)
-          (rename-buffer "*eww*" t))))))
+    (message (plist-get eww-data :title))))
 #+END_SRC
