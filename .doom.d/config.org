@@ -38,26 +38,28 @@
  "C-c o" #'org-pomodoro
  (:prefix "g"
    :n "]" #'flycheck-next-error
-   :n "[" #'flycheck-previous-error
-   )
-  )
+   :n "[" #'flycheck-previous-error))
 #+END_SRC
 ** Leader
 #+BEGIN_SRC emacs-lisp
-(map! :leader :prefix ("t" . "toggle")
-      :desc "Treemacs" "t" #'+treemacs/toggle
-      :desc "Undo Tree" "u" #'undo-tree-mode
-      :desc "Calc" "c" #'calc)
-
-(map! :leader :prefix ("s" . "search")
-      :desc "Google" "g" #'eww)
-
 (map! :leader :prefix ("c" . "code")
       :desc "Next error" "]" #'flycheck-next-error
       :desc "Previous error" "[" #'flycheck-previous-error)
 
 (map! :leader :prefix ("o" . "open")
-      :desc "Eww" "w" #'eww)
+      :desc "Eww" "w" #'eww
+      :desc "Hacker News" "h" #'hackernews)
+
+(map! :leader :prefix ("s" . "search")
+      :desc "Google" "g" #'eww)
+
+(map! :leader :prefix ("t" . "toggle")
+      :desc "Treemacs" "t" #'+treemacs/toggle
+      :desc "Undo Tree" "u" #'undo-tree-mode
+      :desc "Calc" "c" #'calc)
+
+(map! :leader :prefix ("w" . "window")
+      :desc "write" "w" #'save-buffer)
 #+END_SRC
 ** Mode
 #+BEGIN_SRC emacs-lisp
