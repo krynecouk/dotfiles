@@ -23,6 +23,7 @@
  user-mail-address "darius.kryszczuk@gmail.com"
  display-line-numbers-type 'relative
  display-line-numbers-current-absolute nil
+ ;; url-debug t
  doom-scratch-initial-major-mode 'emacs-lisp-mode)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+END_SRC
@@ -42,24 +43,33 @@
 #+END_SRC
 ** Leader
 #+BEGIN_SRC emacs-lisp
-(map! :leader :prefix ("c" . "code")
-      :desc "Next error" "]" #'flycheck-next-error
-      :desc "Previous error" "[" #'flycheck-previous-error)
+(map!
+ :leader
 
-(map! :leader :prefix ("o" . "open")
-      :desc "Eww" "w" #'eww
-      :desc "Hacker News" "h" #'hackernews)
+ (:prefix ("c" . "code")
+  :desc "Next error" "]" #'flycheck-next-error
+  :desc "Previous error" "[" #'flycheck-previous-error)
 
-(map! :leader :prefix ("s" . "search")
-      :desc "Google" "g" #'eww)
+ (:prefix ("o" . "open")
+  :desc "Eww" "w" #'eww
+  :desc "Elfeed" "e" #'elfeed)
 
-(map! :leader :prefix ("t" . "toggle")
-      :desc "Treemacs" "t" #'+treemacs/toggle
-      :desc "Undo Tree" "u" #'undo-tree-mode
-      :desc "Calc" "c" #'calc)
+ (:prefix ("p" . "project")
+  :desc "Write project files" "w" #'projectile-save-project-buffers)
 
-(map! :leader :prefix ("w" . "window")
-      :desc "write" "w" #'save-buffer)
+ (:prefix ("s" . "search")
+  :desc "Google" "g" #'eww)
+
+ (:prefix ("t" . "toggle")
+  :desc "Calc" "c" #'calc
+  :desc "re-builder" "R" #'regexp-builder
+  :desc "Treemacs" "t" #'+treemacs/toggle
+  :desc "Theme"  "T" (cmd! (+theme/swap 'doom-one 'doom-one-light))
+  :desc "Undo Tree" "u" #'undo-tree-mode)
+
+ (:prefix ("w" . "window")
+  :desc "write" "w" #'save-buffer)
+ )
 #+END_SRC
 ** Mode
 #+BEGIN_SRC emacs-lisp
@@ -74,7 +84,13 @@
   (:prefix "g"
    :n "r" #'eww-reload
    :n "R" #'+eww/rename
-   :n "+" #'+eww/raise)))
+   :n "+" #'+eww/raise))
+
+ ;;; elfeed
+ (:after elfeed
+  :map elfeed-search-mode-map
+  (:prefix "g"
+   :n "r" #'elfeed-update)))
 #+END_SRC
 
 * Visuals
@@ -159,8 +175,18 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
   (add-hook 'eww-after-render-hook
             (lambda ()
               (setq-local header-line-format nil)
-              (doom-mark-buffer-as-real-h)
-              (persp-add-buffer (current-buffer)))))
+              (doom-mark-buffer-as-real-h))))
+#+END_SRC
+** Elfeed
+#+BEGIN_SRC emacs-lisp
+(use-package! elfeed
+  :config
+  (elfeed-org)
+  (display-time)
+  (setq elfeed-org (expand-file-name "elfeed.org" doom-private-dir))
+  (setq-default elfeed-search-filter "@1-day-old +news +tech ")
+  (setq rmh-elfeed-org-files (list elfeed-org)))
+(add-hook! 'elfeed-search-mode-hook 'elfeed-update)
 #+END_SRC
 ** Rustic
 #+BEGIN_SRC emacs-lisp
@@ -221,4 +247,15 @@ My custom elisp functions.
   (interactive)
   (when (eq major-mode 'eww-mode )
     (message (plist-get eww-data :title))))
+#+END_SRC
+** Theme
+#+BEGIN_SRC emacs-lisp
+(defun +theme/swap (theme1 theme2)
+  "Toggle between THEME1 and THEME2 doom themes."
+  (let ((target-theme (if (equal theme1 doom-theme)
+                          theme2
+                        theme1)))
+    (progn
+      (setq doom-theme target-theme)
+      (doom/reload-theme))))
 #+END_SRC
