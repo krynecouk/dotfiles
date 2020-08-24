@@ -23,9 +23,10 @@
  user-mail-address "darius.kryszczuk@gmail.com"
  display-line-numbers-type 'relative
  display-line-numbers-current-absolute nil
- ;; url-debug t
+ display-time-default-load-average nil
  doom-scratch-initial-major-mode 'emacs-lisp-mode)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
+(display-time)
 #+END_SRC
 
 * Bindings
@@ -41,16 +42,21 @@
    :n "]" #'flycheck-next-error
    :n "[" #'flycheck-previous-error))
 #+END_SRC
+
+#+RESULTS:
+
 ** Leader
 #+BEGIN_SRC emacs-lisp
 (map!
  :leader
+ :desc "Find" "/" #'swiper
 
  (:prefix ("c" . "code")
   :desc "Next error" "]" #'flycheck-next-error
   :desc "Previous error" "[" #'flycheck-previous-error)
 
  (:prefix ("o" . "open")
+  :desc "Calc" "c" #'calc
   :desc "Eww" "w" #'eww
   :desc "Elfeed" "e" #'elfeed)
 
@@ -151,6 +157,13 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
                    ("POMODORO" . "#f94144")
                    ("POMODOROFF" . "#43aa8b")
                    ("DONE" . "#43aa8b"))))
+
+; paplay args: http://manpages.ubuntu.com/manpages/trusty/man1/paplay.1.html
+(after! org-pomodoro
+  (setq
+   org-pomodoro-finished-sound-args "--volume=20000"
+   org-pomodoro-long-break-sound-args "--volume=20000"
+   org-pomodoro-short-break-sound-args "--volume=20000"))
 #+END_SRC
 ** Undo Tree
 #+BEGIN_SRC emacs-lisp
@@ -184,7 +197,7 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
   (elfeed-org)
   (display-time)
   (setq elfeed-org (expand-file-name "elfeed.org" doom-private-dir))
-  (setq-default elfeed-search-filter "@1-day-old +news +tech ")
+  (setq-default elfeed-search-filter "@1-day-old +tech +news")
   (setq rmh-elfeed-org-files (list elfeed-org)))
 (add-hook! 'elfeed-search-mode-hook 'elfeed-update)
 #+END_SRC
