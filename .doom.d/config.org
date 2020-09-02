@@ -38,6 +38,14 @@
  "C-c a" #'org-agenda
  "C-c c" #'org-capture
  "C-c o" #'org-pomodoro
+ "C-M-f" (lambda ()
+           "Scrolls other window by 1 line down (visually up)."
+           (interactive)
+           (scroll-other-window-down 1))
+ "C-M-v" (lambda ()
+           "Scrolls other window by 1 line up (visually down)."
+           (interactive)
+           (scroll-other-window 1))
  (:prefix "g"
    :n "]" #'flycheck-next-error
    :n "[" #'flycheck-previous-error))
@@ -53,7 +61,9 @@
 
  (:prefix ("c" . "code")
   :desc "Next error" "]" #'flycheck-next-error
-  :desc "Previous error" "[" #'flycheck-previous-error)
+  :desc "Previous error" "[" #'flycheck-previous-error
+  :desc "Run" "r" #'projectile-run-project
+  :desc "LSP Rename" "R" #'lsp-rename)
 
  (:prefix ("o" . "open")
   :desc "Calc" "c" #'calc
