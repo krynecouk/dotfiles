@@ -24,7 +24,7 @@
  display-line-numbers-type 'relative
  display-line-numbers-current-absolute nil
  display-time-default-load-average nil
- doom-scratch-initial-major-mode 'emacs-lisp-mode)
+ doom-scratch-initial-major-mode #'org-mode)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (display-time)
 #+END_SRC
@@ -62,7 +62,7 @@
  (:prefix ("c" . "code")
   :desc "Next error" "]" #'flycheck-next-error
   :desc "Previous error" "[" #'flycheck-previous-error
-  :desc "Run" "r" #'projectile-run-project
+  :desc "Find references" "r" #'lsp-find-references
   :desc "LSP Rename" "R" #'lsp-rename)
 
  (:prefix ("o" . "open")
@@ -215,6 +215,11 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
 #+BEGIN_SRC emacs-lisp
 (use-package! rustic
   :hook (rustic-mode-hook . format-all-mode))
+#+END_SRC
+** web-mode
+#+BEGIN_SRC emacs-lisp
+(use-package! web-mode
+  :hook (web-mode . lsp))
 #+END_SRC
 
 * Custom Elisp
