@@ -67,8 +67,7 @@
 
  (:prefix ("o" . "open")
   :desc "Calc" "c" #'calc
-  :desc "Eww" "w" #'eww
-  :desc "Elfeed" "e" #'elfeed)
+  :desc "Eww" "w" #'eww)
 
  (:prefix ("p" . "project")
   :desc "Write project files" "w" #'projectile-save-project-buffers)
@@ -100,13 +99,7 @@
   (:prefix "g"
    :n "r" #'eww-reload
    :n "R" #'+eww/rename
-   :n "+" #'+eww/raise))
-
- ;;; elfeed
- (:after elfeed
-  :map elfeed-search-mode-map
-  (:prefix "g"
-   :n "r" #'elfeed-update)))
+   :n "+" #'+eww/raise)))
 #+END_SRC
 
 * Visuals
@@ -199,17 +192,6 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
             (lambda ()
               (setq-local header-line-format nil)
               (doom-mark-buffer-as-real-h))))
-#+END_SRC
-** Elfeed
-#+BEGIN_SRC emacs-lisp
-(use-package! elfeed
-  :config
-  (elfeed-org)
-  (display-time)
-  (setq elfeed-org (expand-file-name "elfeed.org" doom-private-dir))
-  (setq-default elfeed-search-filter "@1-day-old +tech +news")
-  (setq rmh-elfeed-org-files (list elfeed-org)))
-(add-hook! 'elfeed-search-mode-hook 'elfeed-update)
 #+END_SRC
 ** Rustic
 #+BEGIN_SRC emacs-lisp
