@@ -180,7 +180,7 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
 #+BEGIN_SRC emacs-lisp
 (use-package! eww
   :config
-  (setq eww-search-prefix "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"))
+  (setq eww-search-prefix "http://www.google.com/search?ie=utf-8&oe=utf-8&q="))
 
 (after! eww
   (set-popup-rule! "*eww"
