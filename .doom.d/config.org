@@ -24,8 +24,11 @@
  display-line-numbers-type 'relative
  display-line-numbers-current-absolute nil
  display-time-default-load-average nil
- doom-scratch-initial-major-mode #'org-mode)
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+ doom-scratch-initial-major-mode #'org-mode
+ ns-use-native-fullscreen t)
+;; ;; https://github.com/railwaycat/homebrew-emacsmacport/issues/160
+(setq ns-use-native-fullscreen t)
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (display-time)
 #+END_SRC
 
@@ -142,31 +145,46 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
                                 ("c" "Code Todo" entry (file+headline org-inbox "Code Tasks")
                                  "* TODO %i%?\n Entered on: %U - %a\n")
                                 ("n" "Note" entry (file+olp+datetree org-default-notes-file)
-                                "* %?\n\n")
+                                 "* %?\n\n")
                                 ("T" "Tickler" entry (file+headline org-tickler "Tickler")
                                  "* %?\n\n %U"))))
 
 (after! org
-           (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+  (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
-           (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "CANCELLED(c)" "DONE(d)")
-                                     (sequence "[ ](T)" "|" "[X](D)")
-                                     (sequence "POMODORO(o)" "|" "POMODOROFF(f)")))
+  (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "CANCELLED(c)" "DONE(d)")
+                            (sequence "[ ](T)" "|" "[X](D)")
+                            (sequence "POMODORO(o)" "|" "POMODOROFF(f)")))
 
-           (setq org-todo-keyword-faces
-                 '(("TODO" . "#f3722c")
-                   ("WAITING" . "#f9c74f")
-                   ("CANCELLED" . "#577590")
-                   ("POMODORO" . "#f94144")
-                   ("POMODOROFF" . "#43aa8b")
-                   ("DONE" . "#43aa8b"))))
+  (setq org-todo-keyword-faces
+        '(("TODO" . "#f3722c")
+          ("WAITING" . "#f9c74f")
+          ("CANCELLED" . "#577590")
+          ("POMODORO" . "#f94144")
+          ("POMODOROFF" . "#43aa8b")
+          ("DONE" . "#43aa8b"))))
 
-; paplay args: http://manpages.ubuntu.com/manpages/trusty/man1/paplay.1.html
 (after! org-pomodoro
   (setq
-   org-pomodoro-finished-sound-args "--volume=20000"
-   org-pomodoro-long-break-sound-args "--volume=20000"
-   org-pomodoro-short-break-sound-args "--volume=20000"))
+   org-pomodoro-finished-sound-args "--volume=0"
+   org-pomodoro-long-break-sound-args "--volume=0"
+   org-pomodoro-short-break-sound-args "--volume=0")
+
+  (add-hook 'org-pomodoro-finished-hook
+            (lambda ()
+              (notify-osx "Pomodoro completed!" "Time for a break.")))
+
+  (add-hook 'org-pomodoro-break-finished-hook
+            (lambda ()
+              (notify-osx "Pomodoro Short Break Finished" "Ready for Another?")))
+
+  (add-hook 'org-pomodoro-long-break-finished-hook
+            (lambda ()
+              (notify-osx "Pomodoro Long Break Finished" "Ready for Another?")))
+
+  (add-hook 'org-pomodoro-killed-hook
+            (lambda ()
+              (notify-osx "Pomodoro Killed" "One does not simply kill a pomodoro!"))))
 #+END_SRC
 ** Undo Tree
 #+BEGIN_SRC emacs-lisp
@@ -269,3 +287,15 @@ My custom elisp functions.
       (setq doom-theme target-theme)
       (doom/reload-theme))))
 #+END_SRC
+** Terminal Notifier
+#+BEGIN_SRC emacs-lisp
+(defun notify-osx (title message)
+  (call-process "terminal-notifier"
+                nil 0 nil
+                "-group" "Emacs"
+                "-title" title
+                "-sender" "org.gnu.Emacs"
+                "-message" message))
+#+END_SRC
+
+

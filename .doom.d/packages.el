@@ -8,3 +8,4 @@
 ;; (package! builtin-package :disable t)
 
 (package! paren)
+(package! nov)
