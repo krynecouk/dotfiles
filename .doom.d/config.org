@@ -2,20 +2,6 @@
 #+AUTHOR: Darius Kryszczuk
 #+EMAIL: darius.kryszczuk@gmail.com
 
-* Prerequisites
-** Mandatory
-- Git 2.23+
-- Emacs 26.1+ (27 is recommended) with GNUTLS support
-- [[https://github.com/BurntSushi/ripgrep][ripgrep]] 11.0+
-- [[https://www.jetbrains.com/lp/mono/][JetBrains Mono]] font
-** Optional
-- [[https://github.com/sharkdp/fd][fd]] 7.3.0+ (improves file indexing performance for some commands)
-- CMake 3.10.0+ (vterm)
-- [[https://github.com/koalaman/shellcheck][shellcheck]]
-- [[https://github.com/markedjs/marked][marked]]
-- [[https://github.com/beautify-web/js-beautify][js-beautify]]
-- [[https://github.com/stylelint/stylelint][stylelint]]
-
 * Defaults
 #+BEGIN_SRC emacs-lisp
 (setq
@@ -26,9 +12,7 @@
  display-time-default-load-average nil
  doom-scratch-initial-major-mode #'org-mode
  ns-use-native-fullscreen t)
-;; ;; https://github.com/railwaycat/homebrew-emacsmacport/issues/160
-(setq ns-use-native-fullscreen t)
-;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 (display-time)
 #+END_SRC
 
@@ -54,8 +38,6 @@
    :n "[" #'flycheck-previous-error))
 #+END_SRC
 
-#+RESULTS:
-
 ** Leader
 #+BEGIN_SRC emacs-lisp
 (map!
@@ -67,6 +49,9 @@
   :desc "Previous error" "[" #'flycheck-previous-error
   :desc "Find references" "r" #'lsp-find-references
   :desc "LSP Rename" "R" #'lsp-rename)
+
+ (:prefix ("f" . "file")
+  :desc "Find file in org" "o" #'find-file-in-org)
 
  (:prefix ("o" . "open")
   :desc "Calc" "c" #'calc
@@ -119,23 +104,24 @@
 
 * Packages
 ** Org
-If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/build/org-mode/*.elc~.
 #+BEGIN_SRC emacs-lisp
 (use-package! org
   :config
   (setq org-directory (expand-file-name "~/dev/org"))
   (setq browse-url-browser-function 'eww-browse-url)
+  (setq org-agenda-todo-ignore-with-date t)
 
   (setq org-inbox (expand-file-name "inbox.org" org-directory)
         org-projects (expand-file-name "projects.org" org-directory)
         org-someday (expand-file-name "someday.org" org-directory)
         org-tickler (expand-file-name "tickler.org" org-directory)
+        org-book (expand-file-name "book.org" org-directory)
         org-notes (expand-file-name "notes.org" org-directory))
 
   (setq org-agenda-files (list org-inbox org-projects org-tickler)
         org-default-notes-file org-notes
         org-refile-targets '(
-                             (org-inbox :maxlevel . 1)
+                             (org-inbox :maxlevel . 2)
                              (org-projects :maxlevel . 2)
                              (org-someday :level . 1)
                              (org-tickler :level . 1)
@@ -144,31 +130,32 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
                                  "* TODO %i%?")
                                 ("c" "Code Todo" entry (file+headline org-inbox "Code Tasks")
                                  "* TODO %i%?\n Entered on: %U - %a\n")
+                                ("b" "Book Todo" entry (file+headline org-book "2021")
+                                 "** TODO %i%?\n:PROPERTIES:\n:auth: \n:year: \n:name: \n:lang: en\n:END:\n")
                                 ("n" "Note" entry (file+olp+datetree org-default-notes-file)
                                  "* %?\n\n")
                                 ("T" "Tickler" entry (file+headline org-tickler "Tickler")
-                                 "* %?\n\n %U"))))
+                                 "* %?\n %U"))))
 
 (after! org
   (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
   (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "CANCELLED(c)" "DONE(d)")
-                            (sequence "[ ](T)" "|" "[X](D)")
-                            (sequence "POMODORO(o)" "|" "POMODOROFF(f)")))
+                            (sequence "TODO(t)" "READING(r)" "|" "DONE(d)")
+                            (sequence "[ ](T)" "|" "[X](D)")))
 
   (setq org-todo-keyword-faces
-        '(("TODO" . "#f3722c")
-          ("WAITING" . "#f9c74f")
+        '(("TODO" . "#ef4f4f")
+          ("WAITING" . "#ffcda3")
+          ("READING" . "#ffcda3")
           ("CANCELLED" . "#577590")
-          ("POMODORO" . "#f94144")
-          ("POMODOROFF" . "#43aa8b")
-          ("DONE" . "#43aa8b"))))
+          ("DONE" . "#74c7b8"))))
 
 (after! org-pomodoro
   (setq
-   org-pomodoro-finished-sound-args "--volume=0"
-   org-pomodoro-long-break-sound-args "--volume=0"
-   org-pomodoro-short-break-sound-args "--volume=0")
+   org-pomodoro-finished-sound-args "-volume 0.3"
+   org-pomodoro-long-break-sound-args "-volume 0.3"
+   org-pomodoro-short-break-sound-args "-volume 0.3")
 
   (add-hook 'org-pomodoro-finished-hook
             (lambda ()
@@ -184,7 +171,8 @@ If ~org-preserve-local-variables~ occurs run ~rm ~/.emacs.d/.local/straight/buil
 
   (add-hook 'org-pomodoro-killed-hook
             (lambda ()
-              (notify-osx "Pomodoro Killed" "One does not simply kill a pomodoro!"))))
+              (notify-osx "Pomodoro Killed" "One does not simply kill a pomodoro!")))
+  )
 #+END_SRC
 ** Undo Tree
 #+BEGIN_SRC emacs-lisp
@@ -251,7 +239,6 @@ My custom elisp functions.
   (+popup/other)
   (+popup/raise (selected-window)))
 #+END_SRC
-
 ** Eww
 #+BEGIN_SRC emacs-lisp
 (defun +eww/rename ()
@@ -297,5 +284,10 @@ My custom elisp functions.
                 "-sender" "org.gnu.Emacs"
                 "-message" message))
 #+END_SRC
-
-
+** Org
+#+BEGIN_SRC emacs-lisp
+(defun find-file-in-org ()
+  "Search for a file in `org-directory'."
+  (interactive)
+  (doom-project-find-file org-directory))
+#+END_SRC
