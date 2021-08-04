@@ -10,7 +10,7 @@
  display-line-numbers-type 'relative
  display-line-numbers-current-absolute nil
  display-time-default-load-average nil
- doom-scratch-initial-major-mode #'org-mode
+ doom-scratch-initial-major-mode #'emacs-lisp-mode
  ns-use-native-fullscreen t)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (display-time)
@@ -20,22 +20,28 @@
 ** Global
 #+BEGIN_SRC emacs-lisp
 (map!
- "M-k" #'drag-stuff-up
- "M-j" #'drag-stuff-down
- "C-c a" #'org-agenda
- "C-c c" #'org-capture
- "C-c o" #'org-pomodoro
- "C-M-f" (lambda ()
+ "s-k" #'drag-stuff-up
+ "s-j" #'drag-stuff-down
+ "<s-return>" #'org-insert-heading
+ "C-s-f" (lambda ()
            "Scrolls other window by 1 line down (visually up)."
            (interactive)
            (scroll-other-window-down 1))
- "C-M-v" (lambda ()
+ "C-s-v" (lambda ()
            "Scrolls other window by 1 line up (visually down)."
            (interactive)
            (scroll-other-window 1))
+ (:prefix "C-c"
+  :n "a" #'org-agenda
+  :n "c" #'org-capture
+  :n "i" #'org-clock-in
+  :n "o" #'org-clock-out
+  :n "p" #'org-pomodoro
+  :n "u" #'org-move-subtree-up
+  :n "d" #'org-move-subtree-down)
  (:prefix "g"
-   :n "]" #'flycheck-next-error
-   :n "[" #'flycheck-previous-error))
+  :n "]" #'flycheck-next-error
+  :n "[" #'flycheck-previous-error))
 #+END_SRC
 
 ** Leader
@@ -110,6 +116,7 @@
   (setq org-directory (expand-file-name "~/dev/org"))
   (setq browse-url-browser-function 'eww-browse-url)
   (setq org-agenda-todo-ignore-with-date t)
+  (setq org-deadline-warning-days 3)
 
   (setq org-inbox (expand-file-name "inbox.org" org-directory)
         org-projects (expand-file-name "projects.org" org-directory)
