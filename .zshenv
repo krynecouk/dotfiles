@@ -1,0 +1,5 @@
+export NVM_DIR="$HOME/.nvm"
+export NVM_HOME="/usr/local/opt/nvm"
+export EMACS_HOME="$HOME/.emacs.d"
+export JAVA_HOME="/usr/local/opt/openjdk"
+export PATH="$PATH:$EMACS_HOME/bin:$JAVA_HOME/bin:/usr/local/sbin"
