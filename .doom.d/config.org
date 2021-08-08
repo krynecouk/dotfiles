@@ -22,7 +22,6 @@
 (map!
  "s-k" #'drag-stuff-up
  "s-j" #'drag-stuff-down
- "<s-return>" #'org-insert-heading
  "C-s-f" (lambda ()
            "Scrolls other window by 1 line down (visually up)."
            (interactive)
@@ -83,6 +82,14 @@
 ** Mode
 #+BEGIN_SRC emacs-lisp
 (map!
+ ;;; org
+ (:after org
+  :map org-mode-map
+  :nm "<s-f>" #'link-hint-open-link
+  :nmvi "<s-return>" #'org-insert-heading
+  :nmvi "<S-s-return>" #'org-insert-subheading
+  )
+
  ;;; eww
  (:after eww
   :map eww-mode-map
