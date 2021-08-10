@@ -91,7 +91,8 @@
   :nmvi "C-c n l" #'org-roam-buffer-toggle
   :nmvi "C-c n f" #'org-roam-node-find
   :nmvi "C-c n i" #'org-roam-node-insert
-  :nmvi "C-M-i" #'completion-at-point)
+  :nmvi "C-M-i" #'completion-at-point
+  :nmvi "C-c C-i" #'org-insert-img-link)
 
  ;;; eww
  (:after eww
@@ -155,7 +156,6 @@
                                  "* %?\n %U"))))
 
 (after! org
-  (setq org-roam-directory "~/dev/org/roam")
   (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
   (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "CANCELLED(c)" "DONE(d)")
@@ -168,6 +168,9 @@
           ("READING" . "#ffcda3")
           ("CANCELLED" . "#577590")
           ("DONE" . "#74c7b8"))))
+
+(after! org-roam
+  (setq org-roam-directory "~/dev/org/roam"))
 
 (after! org-pomodoro
   (setq
@@ -308,4 +311,13 @@ My custom elisp functions.
   "Search for a file in `org-directory'."
   (interactive)
   (doom-project-find-file org-directory))
+
 #+END_SRC
+
+#+begin_src emacs-lisp
+(defun org-insert-img-link ()
+  "Inserts default img attributes and asks for img link."
+  (interactive)
+  (insert "#+attr_html: :width 800px\n#+attr_latex: :width 800px\n")
+  (org-insert-link))
+#+end_src
