@@ -12,7 +12,7 @@ set highlightedyank
 set noshowmode
 set scrolloff=1
 set rnu
-"set clipboard=unnamed
+set clipboard=unnamed
 set clipboard+=ideaput
 
 " Search
@@ -22,6 +22,8 @@ set ignorecase
 set smartcase
 
 " Idea
+set visualbell
+set noerrorbells
 set ideajoin
 set ideastatusicon=gray
 set idearefactormode=keep
@@ -51,7 +53,8 @@ nmap <leader>pp :action OpenProjectWindows<cr>
 
 " Windows
 nmap <leader>T :action ActivateTerminalToolWindow<cr>
-nmap <leader>tt :action ActivateProjectToolWindow<cr>
+" nmap <leader>tt :NERDTreeToggle<CR>
+nmap <leader>tt :action ActivateProjectToolWindow<CR>
 nmap <leader>o :action HideAllWindows<cr>
 nmap <leader>tz :action ToggleDistractionFreeMode<cr>
 
