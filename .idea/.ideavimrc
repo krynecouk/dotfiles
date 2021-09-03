@@ -1,0 +1,86 @@
+""" Leader ----------------------------------
+let mapleader="\<Space>"
+
+""" Plugins ---------------------------------
+" https://github.com/JetBrains/ideavim/wiki/Emulated-plugins
+set surround
+set commentary
+set NERDTree
+set highlightedyank
+
+""" Settings --------------------------------
+set noshowmode
+set scrolloff=1
+set rnu
+set clipboard=unnamed
+set clipboard+=ideaput
+
+" Search
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+" Idea
+set visualbell
+set noerrorbells
+set ideajoin
+set ideastatusicon=gray
+set idearefactormode=keep
+
+""" Mappings --------------------------------
+vnoremap <esc> <esc>
+nnoremap <C-g> <esc>
+
+" Navigation
+nmap <leader><leader> :action GotoFile<cr>
+nmap <M-x> :action GotoAction<cr>
+nmap <leader>ff :action OpenFile<cr>
+nmap <leader>, :action RecentFiles<cr>
+nmap <leader>fr :action RecentFiles<cr>
+nmap <leader>* :action FindInPath<cr>
+nmap <leader>` :action PreviousTab<cr>
+nmap gh :action ShowNavBar<cr>
+nmap gb :action Back<cr>
+nmap gf :action Forward<cr>
+nmap <C-o> :action Back<cr>
+nmap <C-i> :action Forward<cr>
+nmap gd :action GotoDeclaration<cr>
+nmap gi :action GotoImplementation<cr>
+nmap gs :action GotoSuperMethod<cr>
+nmap gu :action ShowUsages<cr>
+nmap gU :action FindUsages<cr>
+nmap gr :action ReformatCode<cr>
+nmap gc :action HideAllWindows<cr>
+nmap g] :action GotoNextError<cr>
+nmap g[ :action GotoPreviousError<cr>
+nmap K :action QuickImplementations<cr>
+
+
+" Project
+nmap <leader>pr :action Run<cr>
+nmap <leader>pd :action Debug<cr>
+nmap <leader>ps :action Stop<cr>
+nmap <leader>pp :action OpenProjectWindows<cr>
+nmap <leader>p` :action NextProjectWindow<cr>
+nmap <leader>pw :action SaveAll<cr>
+nmap <leader>pb :action ToggleLineBreakpoint<cr>
+
+" Windows
+nmap <leader>T :action ActivateTerminalToolWindow<cr>
+" nmap <leader>tt :NERDTreeToggle<CR>
+nmap <leader>tt :action ActivateProjectToolWindow<cr>
+nmap <leader>w :action HideAllWindows<cr>
+" nmap <leader>o :action HideActiveWindow<cr>
+nmap <leader>tz :action ToggleDistractionFreeMode<cr>
+
+" Formatting
+" nmap <M-cr> :action Refactorings.QuickListPopupAction<cr>
+nmap <M-cr> :action Generate<cr>
+nmap <leader>ff :action ReformatCode<cr>
+nmap R :action RenameElement<cr>
+nmap <C-j> :action MoveLineDown<cr>
+nmap <C-k> :action MoveLineUp<cr>
+vmap <C-j> :action MoveLineDown<cr>
+vmap <C-k> :action MoveLineUp<cr>
+
