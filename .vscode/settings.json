@@ -1,0 +1,129 @@
+{
+  // General -----------------------------------
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+
+  // Lang --------------------------------------
+  "java.home": "/usr/local/opt/openjdk@11",
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  },
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx1G -Xms100m -javaagent:\"/Users/darius.kryszczuk/.vscode/extensions/gabrielbb.vscode-lombok-1.0.1/server/lombok.jar\"",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // Appearance --------------------------------
+  "workbench.colorTheme": "Default Dark+",
+  "editor.lineNumbers": "relative",
+  "zenMode.hideLineNumbers": false,
+  "zenMode.fullScreen": false,
+  "zenMode.hideStatusBar": false,
+  "workbench.editor.showTabs": false,
+  "workbench.editor.enablePreview": false,
+  "workbench.activityBar.visible": false,
+  "explorer.openEditors.visible": 0,
+  "vim.statusBarColorControl": false,
+  "editor.minimap.enabled": false,
+  "ActiveFileInStatusBar.enable": true,
+  "ActiveFileInStatusBar.fullpath": false,
+  "ActiveFileInStatusBar.revealFile": false,
+
+  // Vim ---------------------------------------
+  "vim.useCtrlKeys": true,
+  "vim.hlsearch": true,
+  "vim.incsearch": true,
+  "vim.smartcase": true,
+  "vim.useSystemClipboard": true,
+
+  // Bindings
+  "vim.leader": "<space>",
+  "vim.normalModeKeyBindingsNonRecursive": [
+    // Navigation
+    {
+      "before": ["<leader>", "*"],
+      "commands": ["workbench.action.findInFiles"]
+    },
+    {
+      "before": ["<leader>", "<leader>"],
+      "commands": ["workbench.action.quickOpen"]
+    },
+    {
+      "before": ["<leader>", ","],
+      "commands": [
+        "workbench.action.showAllEditorsByMostRecentlyUsed",
+        "workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup"
+      ]
+    },
+    {
+      "before": ["<leader>", "`"],
+      "commands": ["workbench.action.openPreviousRecentlyUsedEditor"]
+    },
+    // Code
+    {
+      "before": ["g", "u"],
+      "commands": ["editor.action.goToReferences"]
+    },
+    {
+      "before": ["g", "]"],
+      "commands": ["editor.action.marker.nextInFiles"]
+    },
+    {
+      "before": ["g", "["],
+      "commands": ["editor.action.marker.prevInFiles"]
+    },
+    {
+      "before": ["<leader>", "f", "f"],
+      "commands": ["editor.action.formatDocument"]
+    },
+    {
+      "before": ["<leader>", "c", "a"],
+      "commands": ["editor.action.codeAction"]
+    },
+    // Editor
+    {
+      "before": ["<esc>", "<esc>"],
+      "commands": ["notifications.clearAll", ":only", ":noh"]
+    },
+    // Project
+    {
+      "before": ["<leader>", "p", "p"],
+      "commands": ["workbench.action.openRecent"]
+    },
+    {
+      "before": ["<leader>", "p", "w"],
+      "commands": ["workbench.action.files.saveAll"]
+    },
+    // Open/Toggle
+    {
+      "before": ["<leader>", "o", "t"],
+      "commands": ["workbench.action.terminal.focus"]
+    },
+    {
+      "before": ["<leader>", "t", "t"],
+      "commands": ["workbench.view.explorer"]
+    },
+    {
+      "before": ["<leader>", "t", "s"],
+      "commands": ["workbench.action.toggleActivityBarVisibility"]
+    },
+    {
+      "before": ["<leader>", "t", "F"],
+      "commands": ["workbench.action.toggleFullScreen"]
+    },
+    {
+      "before": ["<leader>", "t", "z"],
+      "commands": ["workbench.action.toggleZenMode"]
+    }
+  ],
+  "vim.visualModeKeyBindings": [
+    {
+      "before": ["<leader>", "f", "f"],
+      "commands": ["editor.action.formatSelection"]
+    }
+  ]
+}
