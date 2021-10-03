@@ -1,1 +1,319 @@
-#+TITLE: Emacs Configuration#+AUTHOR: Darius Kryszczuk#+EMAIL: darius.kryszczuk@gmail.com* Defaults#+BEGIN_SRC emacs-lisp(setq user-full-name "Darius Kryszczuk" user-mail-address "darius.kryszczuk@gmail.com" display-line-numbers-type 'relative display-line-numbers-current-absolute nil display-time-default-load-average nil doom-scratch-initial-major-mode #'emacs-lisp-mode ns-use-native-fullscreen t)(add-to-list 'default-frame-alist '(fullscreen . maximized))(display-time)#+END_SRC* Bindings** Global#+BEGIN_SRC emacs-lisp(map! "s-k" #'drag-stuff-up "s-j" #'drag-stuff-down "C-s-f" (lambda ()           "Scrolls other window by 1 line down (visually up)."           (interactive)           (scroll-other-window-down 1)) "C-s-v" (lambda ()           "Scrolls other window by 1 line up (visually down)."           (interactive)           (scroll-other-window 1)) (:prefix "C-c"  :n "a" #'org-agenda  :n "c" #'org-capture  :n "i" #'org-clock-in  :n "o" #'org-clock-out  :n "p" #'org-pomodoro  :n "u" #'org-move-subtree-up  :n "d" #'org-move-subtree-down) (:prefix "g"  :n "]" #'flycheck-next-error  :n "[" #'flycheck-previous-error))#+END_SRC** Leader#+BEGIN_SRC emacs-lisp(map! :leader :desc "Find" "/" #'swiper (:prefix ("c" . "code")  :desc "Next error" "]" #'flycheck-next-error  :desc "Previous error" "[" #'flycheck-previous-error  :desc "Find references" "r" #'lsp-find-references  :desc "LSP Rename" "R" #'lsp-rename) (:prefix ("f" . "file")  :desc "Find file in org" "o" #'find-file-in-org) (:prefix ("o" . "open")  :desc "Calc" "c" #'calc  :desc "Eww" "w" #'eww) (:prefix ("p" . "project")  :desc "Write project files" "w" #'projectile-save-project-buffers) (:prefix ("s" . "search")  :desc "Google" "g" #'eww) (:prefix ("t" . "toggle")  :desc "Calc" "c" #'calc  :desc "re-builder" "R" #'regexp-builder  :desc "Treemacs" "t" #'+treemacs/toggle  :desc "Theme"  "T" (cmd! (+theme/swap 'doom-one 'doom-one-light))  :desc "Undo Tree" "u" #'undo-tree-mode) (:prefix ("w" . "window")  :desc "write" "w" #'save-buffer) )#+END_SRC** Mode#+BEGIN_SRC emacs-lisp(map! ;;; org (:after org  :map org-mode-map  :nm "<s-f>" #'link-hint-open-link  :nmvi "<s-return>" #'+org/insert-item-below  :nmvi "<S-s-return>" #'org-insert-subheading  :nmvi "C-M-i" #'completion-at-point  :nmvi "C-c C-i" #'org-insert-img-link) ;;; org-roam (:after org-roam  :map org-mode-map  :nmvi "C-c n l" #'org-roam-buffer-toggle  :nmvi "C-c n f" #'org-roam-node-find  :nmvi "C-c n i" #'org-roam-node-insert) ;;; eww (:after eww  :map eww-mode-map  :n "q" (lambda ()           "Quit window only if popup."           (interactive)           (while (+popup--p) (+popup/quit-window)))  (:prefix "g"   :n "r" #'eww-reload   :n "R" #'+eww/rename   :n "+" #'+eww/raise)))#+END_SRC* Visuals#+BEGIN_SRC emacs-lisp(setq doom-themes-treemacs-theme "Default" doom-themes-treemacs-enable-variable-pitch t doom-font (font-spec :family "JetBrains Mono" :size 13) +doom-dashboard-banner-dir (concat doom-private-dir "banners/") doom-modeline-height 22 doom-modeline-major-mode-color-icon t all-the-icons-scale-factor 1)#+END_SRC* Packages** Org#+BEGIN_SRC emacs-lisp(use-package! org  :init  (setq org-directory (expand-file-name "~/dev/org"))  (setq browse-url-browser-function 'eww-browse-url)  (setq org-agenda-todo-ignore-with-date t)  (setq org-deadline-warning-days 3)  (setq org-inbox (expand-file-name "inbox.org" org-directory)        org-projects (expand-file-name "projects.org" org-directory)        org-someday (expand-file-name "someday.org" org-directory)        org-tickler (expand-file-name "tickler.org" org-directory)        org-book (expand-file-name "book.org" org-directory)        org-notes (expand-file-name "notes.org" org-directory))  :config  (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))  (setq org-agenda-files (list org-inbox org-projects org-tickler)        org-default-notes-file org-notes        org-refile-targets '(                             (org-inbox :maxlevel . 2)                             (org-projects :maxlevel . 2)                             (org-someday :level . 1)                             (org-tickler :level . 1))        org-capture-templates '(("t" "Todo" entry (file+headline org-inbox "Tasks")                                 "* TODO %i%?")                                ("c" "Code Todo" entry (file+headline org-inbox "Code Tasks")                                 "* TODO %i%?\n Entered on: %U - %a\n")                                ("b" "Book Todo" entry (file+headline org-book "2021")                                 "** TODO %i%?\n:PROPERTIES:\n:auth: \n:year: \n:name: \n:lang: en\n:END:\n")                                ("n" "Note" entry (file+olp+datetree org-default-notes-file)                                 "* %?\n\n")                                ("T" "Tickler" entry (file+headline org-tickler "Tickler")                                 "* %?\n %U")))  (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "CANCELLED(c)" "DONE(d)")                            (sequence "TODO(t)" "READING(r)" "|" "DONE(d)")                            (sequence "[ ](T)" "|" "[X](D)")))  (setq org-todo-keyword-faces        '(("TODO" . "#ef4f4f")          ("WAITING" . "#ffcda3")          ("READING" . "#ffcda3")          ("CANCELLED" . "#577590")          ("DONE" . "#74c7b8"))))(use-package! org-roam  :config  (setq org-roam-directory "~/dev/org/roam"))(use-package! org-pomodoro  :config  (setq   org-pomodoro-finished-sound-args "-volume 0.3"   org-pomodoro-long-break-sound-args "-volume 0.3"   org-pomodoro-short-break-sound-args "-volume 0.3")  (add-hook 'org-pomodoro-finished-hook            (lambda ()              (notify-osx "Pomodoro completed!" "Time for a break.")))  (add-hook 'org-pomodoro-break-finished-hook            (lambda ()              (notify-osx "Pomodoro Short Break Finished" "Ready for Another?")))  (add-hook 'org-pomodoro-long-break-finished-hook            (lambda ()              (notify-osx "Pomodoro Long Break Finished" "Ready for Another?")))  (add-hook 'org-pomodoro-killed-hook            (lambda ()              (notify-osx "Pomodoro Killed" "One does not simply kill a pomodoro!"))))#+END_SRC** Undo Tree#+BEGIN_SRC emacs-lisp(use-package! undo-tree  :defer t  :custom  (undo-tree-visualizer-diff t)  (undo-tree-visualizer-timestamps t))#+END_SRC** Eww#+BEGIN_SRC emacs-lisp(use-package! eww  :config  (setq eww-search-prefix "http://www.google.com/search?ie=utf-8&oe=utf-8&q="))(after! eww  (set-popup-rule! "*eww"    :size 100    :side 'right    :ttl nil    :quit #'+popup--p)  (add-hook 'eww-after-render-hook            (lambda ()              (setq-local header-line-format nil)              (doom-mark-buffer-as-real-h))))#+END_SRC** web-mode#+BEGIN_SRC emacs-lisp(use-package! web-mode  :hook (web-mode . lsp))#+END_SRC* Custom ElispMy custom elisp functions.** Popup#+BEGIN_SRC emacs-lisp(defun +popup--p (&optional window)  "Returns t when WINDOW (or selected window) is a popup."  (when (+popup-window-p (or window (selected-window))) t))#+END_SRC#+BEGIN_SRC emacs-lisp(defun +popup/p ()  "Returns t when selected window is a popup."  (interactive)  (message "Is popup -> %s" (if (+popup--p) "True" "False")))#+END_SRC#+BEGIN_SRC emacs-lisp(defun +popup/raise-to-split-window ()  "Raise popup to vertically splitted window."  (interactive)  (unless (+popup--p)    (user-error "Cannot raise a non-popup window"))  (other-window 1)  (when (< (length (doom-visible-windows)) 2)    (+evil-window-vsplit-a))  (select-window (car (last (doom-visible-windows))))  (+popup/other)  (+popup/raise (selected-window)))#+END_SRC** Eww#+BEGIN_SRC emacs-lisp(defun +eww/rename ()  "Rename eww buffer. Current page title as a default."  (interactive)  (let ((name (read-from-minibuffer "New name: " (+eww/page-title))))       (rename-buffer name t)))#+END_SRC#+BEGIN_SRC emacs-lisp(defun +eww/raise ()  "Raise eww buffer and rename it to the page title."  (interactive)  (+popup/raise-to-split-window)  (rename-buffer (+eww/page-title) t))#+END_SRC#+BEGIN_SRC emacs-lisp(defun +eww/page-title ()  "Returns web page title or nil. Print as side effect."  (interactive)  (when (eq major-mode 'eww-mode )    (message (plist-get eww-data :title))))#+END_SRC** Theme#+BEGIN_SRC emacs-lisp(defun +theme/swap (theme1 theme2)  "Toggle between THEME1 and THEME2 doom themes."  (let ((target-theme (if (equal theme1 doom-theme)                          theme2                        theme1)))    (progn      (setq doom-theme target-theme)      (doom/reload-theme))))#+END_SRC** Terminal Notifier#+BEGIN_SRC emacs-lisp(defun notify-osx (title message)  (call-process "terminal-notifier"                nil 0 nil                "-group" "Emacs"                "-title" title                "-sender" "org.gnu.Emacs"                "-message" message))#+END_SRC** Org#+BEGIN_SRC emacs-lisp(defun find-file-in-org ()  "Search for a file in `org-directory'."  (interactive)  (doom-project-find-file org-directory))#+END_SRC#+BEGIN_SRC emacs-lisp(defun org-insert-img-link ()  "Inserts default img attributes and asks for img link."  (interactive)  (insert "#+attr_html: :width 800px\n#+attr_latex: :width 800px\n")  (org-insert-link))#+END_SRC
+#+TITLE: Emacs Configuration
+#+AUTHOR: Darius Kryszczuk
+#+EMAIL: darius.kryszczuk@gmail.com
+
+* Defaults
+#+BEGIN_SRC emacs-lisp
+(setq
+ user-full-name "Darius Kryszczuk"
+ user-mail-address "darius.kryszczuk@gmail.com"
+ display-line-numbers-type 'relative
+ display-line-numbers-current-absolute nil
+ display-time-default-load-average nil
+ doom-scratch-initial-major-mode #'emacs-lisp-mode
+ ns-use-native-fullscreen t)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+(display-time)
+#+END_SRC
+
+* Bindings
+** Global
+#+BEGIN_SRC emacs-lisp
+(map!
+ "s-k" #'drag-stuff-up
+ "s-j" #'drag-stuff-down
+ "C-s-f" (lambda ()
+           "Scrolls other window by 1 line down (visually up)."
+           (interactive)
+           (scroll-other-window-down 1))
+ "C-s-v" (lambda ()
+           "Scrolls other window by 1 line up (visually down)."
+           (interactive)
+           (scroll-other-window 1))
+ (:prefix "C-c"
+  :n "a" #'org-agenda
+  :n "c" #'org-capture
+  :n "i" #'org-clock-in
+  :n "o" #'org-clock-out
+  :n "p" #'org-pomodoro
+  :n "u" #'org-move-subtree-up
+  :n "d" #'org-move-subtree-down)
+ (:prefix "g"
+  :n "]" #'flycheck-next-error
+  :n "[" #'flycheck-previous-error))
+#+END_SRC
+
+** Leader
+#+BEGIN_SRC emacs-lisp
+(map!
+ :leader
+ :desc "Find" "/" #'swiper
+
+ (:prefix ("c" . "code")
+  :desc "Next error" "]" #'flycheck-next-error
+  :desc "Previous error" "[" #'flycheck-previous-error
+  :desc "Find references" "r" #'lsp-find-references
+  :desc "LSP Rename" "R" #'lsp-rename)
+
+ (:prefix ("f" . "file")
+  :desc "Find file in org" "o" #'find-file-in-org)
+
+ (:prefix ("o" . "open")
+  :desc "Calc" "c" #'calc
+  :desc "Eww" "w" #'eww)
+
+ (:prefix ("p" . "project")
+  :desc "Write project files" "w" #'projectile-save-project-buffers)
+
+ (:prefix ("s" . "search")
+  :desc "Google" "g" #'eww)
+
+ (:prefix ("t" . "toggle")
+  :desc "Calc" "c" #'calc
+  :desc "re-builder" "R" #'regexp-builder
+  :desc "Treemacs" "t" #'+treemacs/toggle
+  :desc "Theme"  "T" (cmd! (+theme/swap 'doom-one 'doom-one-light))
+  :desc "Undo Tree" "u" #'undo-tree-mode)
+
+ (:prefix ("w" . "window")
+  :desc "write" "w" #'save-buffer)
+ )
+#+END_SRC
+** Mode
+#+BEGIN_SRC emacs-lisp
+(map!
+ ;;; org
+ (:after org
+  :map org-mode-map
+  :nm "<s-f>" #'link-hint-open-link
+  :nmvi "<s-return>" #'+org/insert-item-below
+  :nmvi "<S-s-return>" #'org-insert-subheading
+  :nmvi "C-M-i" #'completion-at-point
+  :nmvi "C-c C-i" #'org-insert-img-link)
+
+ ;;; org-roam
+ (:after org-roam
+  :map org-mode-map
+  :nmvi "C-c n l" #'org-roam-buffer-toggle
+  :nmvi "C-c n f" #'org-roam-node-find
+  :nmvi "C-c n i" #'org-roam-node-insert)
+
+ ;;; eww
+ (:after eww
+  :map eww-mode-map
+  :n "q" (lambda ()
+           "Quit window only if popup."
+           (interactive)
+           (while (+popup--p) (+popup/quit-window)))
+  (:prefix "g"
+   :n "r" #'eww-reload
+   :n "R" #'+eww/rename
+   :n "+" #'+eww/raise)))
+#+END_SRC
+
+* Visuals
+#+BEGIN_SRC emacs-lisp
+(setq
+ doom-themes-treemacs-theme "Default"
+ doom-themes-treemacs-enable-variable-pitch t
+ doom-font (font-spec :family "JetBrains Mono" :size 13)
+ +doom-dashboard-banner-dir (concat doom-private-dir "banners/")
+ doom-modeline-height 22
+ doom-modeline-major-mode-color-icon t
+ all-the-icons-scale-factor 1)
+#+END_SRC
+
+* Packages
+** Org
+#+BEGIN_SRC emacs-lisp
+(use-package! org
+  :init
+  (setq org-directory (expand-file-name "~/dev/org"))
+  (setq browse-url-browser-function 'eww-browse-url)
+  (setq org-agenda-todo-ignore-with-date t)
+  (setq org-deadline-warning-days 3)
+  (setq org-inbox (expand-file-name "inbox.org" org-directory)
+        org-projects (expand-file-name "projects.org" org-directory)
+        org-someday (expand-file-name "someday.org" org-directory)
+        org-tickler (expand-file-name "tickler.org" org-directory)
+        org-book (expand-file-name "book.org" org-directory)
+        org-notes (expand-file-name "notes.org" org-directory))
+  :config
+  (setf org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+  (setq org-agenda-files (list org-inbox org-projects org-tickler)
+        org-default-notes-file org-notes
+        org-refile-targets '(
+                             (org-inbox :maxlevel . 2)
+                             (org-projects :maxlevel . 2)
+                             (org-someday :level . 1)
+                             (org-tickler :level . 1))
+        org-capture-templates '(("t" "Todo" entry (file+headline org-inbox "Tasks")
+                                 "* TODO %i%?")
+                                ("c" "Code Todo" entry (file+headline org-inbox "Code Tasks")
+                                 "* TODO %i%?\n Entered on: %U - %a\n")
+                                ("b" "Book Todo" entry (file+headline org-book "2021")
+                                 "** TODO %i%?\n:PROPERTIES:\n:auth: \n:year: \n:name: \n:lang: en\n:END:\n")
+                                ("n" "Note" entry (file+olp+datetree org-default-notes-file)
+                                 "* %?\n\n")
+                                ("T" "Tickler" entry (file+headline org-tickler "Tickler")
+                                 "* %?\n %U")))
+
+  (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "CANCELLED(c)" "DONE(d)")
+                            (sequence "TODO(t)" "READING(r)" "|" "DONE(d)")
+                            (sequence "[ ](T)" "|" "[X](D)")))
+
+  (setq org-todo-keyword-faces
+        '(("TODO" . "#ef4f4f")
+          ("WAITING" . "#ffcda3")
+          ("READING" . "#ffcda3")
+          ("CANCELLED" . "#577590")
+          ("DONE" . "#74c7b8"))))
+
+(use-package! org-roam
+  :config
+  (setq org-roam-directory "~/dev/org/roam"))
+
+(use-package! org-pomodoro
+  :config
+  (setq
+   org-pomodoro-finished-sound-args "-volume 0.3"
+   org-pomodoro-long-break-sound-args "-volume 0.3"
+   org-pomodoro-short-break-sound-args "-volume 0.3")
+
+  (add-hook 'org-pomodoro-finished-hook
+            (lambda ()
+              (notify-osx "Pomodoro completed!" "Time for a break.")))
+
+  (add-hook 'org-pomodoro-break-finished-hook
+            (lambda ()
+              (notify-osx "Pomodoro Short Break Finished" "Ready for Another?")))
+
+  (add-hook 'org-pomodoro-long-break-finished-hook
+            (lambda ()
+              (notify-osx "Pomodoro Long Break Finished" "Ready for Another?")))
+
+  (add-hook 'org-pomodoro-killed-hook
+            (lambda ()
+              (notify-osx "Pomodoro Killed" "One does not simply kill a pomodoro!"))))
+#+END_SRC
+** Undo Tree
+#+BEGIN_SRC emacs-lisp
+(use-package! undo-tree
+  :defer t
+  :custom
+  (undo-tree-visualizer-diff t)
+  (undo-tree-visualizer-timestamps t))
+#+END_SRC
+** Eww
+#+BEGIN_SRC emacs-lisp
+(use-package! eww
+  :config
+  (setq eww-search-prefix "http://www.google.com/search?ie=utf-8&oe=utf-8&q="))
+
+(after! eww
+  (set-popup-rule! "*eww"
+    :size 100
+    :side 'right
+    :ttl nil
+    :quit #'+popup--p)
+  (add-hook 'eww-after-render-hook
+            (lambda ()
+              (setq-local header-line-format nil)
+              (doom-mark-buffer-as-real-h))))
+#+END_SRC
+** web-mode
+#+BEGIN_SRC emacs-lisp
+(use-package! web-mode
+  :hook (web-mode . lsp))
+#+END_SRC
+
+* Custom Elisp
+My custom elisp functions.
+** Popup
+#+BEGIN_SRC emacs-lisp
+(defun +popup--p (&optional window)
+  "Returns t when WINDOW (or selected window) is a popup."
+  (when (+popup-window-p (or window (selected-window))) t))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun +popup/p ()
+  "Returns t when selected window is a popup."
+  (interactive)
+  (message "Is popup -> %s" (if (+popup--p) "True" "False")))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun +popup/raise-to-split-window ()
+  "Raise popup to vertically splitted window."
+  (interactive)
+  (unless (+popup--p)
+    (user-error "Cannot raise a non-popup window"))
+  (other-window 1)
+  (when (< (length (doom-visible-windows)) 2)
+    (+evil-window-vsplit-a))
+  (select-window (car (last (doom-visible-windows))))
+  (+popup/other)
+  (+popup/raise (selected-window)))
+#+END_SRC
+** Eww
+#+BEGIN_SRC emacs-lisp
+(defun +eww/rename ()
+  "Rename eww buffer. Current page title as a default."
+  (interactive)
+  (let ((name (read-from-minibuffer "New name: " (+eww/page-title))))
+       (rename-buffer name t)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun +eww/raise ()
+  "Raise eww buffer and rename it to the page title."
+  (interactive)
+  (+popup/raise-to-split-window)
+  (rename-buffer (+eww/page-title) t))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun +eww/page-title ()
+  "Returns web page title or nil. Print as side effect."
+  (interactive)
+  (when (eq major-mode 'eww-mode )
+    (message (plist-get eww-data :title))))
+#+END_SRC
+** Theme
+#+BEGIN_SRC emacs-lisp
+(defun +theme/swap (theme1 theme2)
+  "Toggle between THEME1 and THEME2 doom themes."
+  (let ((target-theme (if (equal theme1 doom-theme)
+                          theme2
+                        theme1)))
+    (progn
+      (setq doom-theme target-theme)
+      (doom/reload-theme))))
+#+END_SRC
+** Terminal Notifier
+#+BEGIN_SRC emacs-lisp
+(defun notify-osx (title message)
+  (call-process "terminal-notifier"
+                nil 0 nil
+                "-group" "Emacs"
+                "-title" title
+                "-sender" "org.gnu.Emacs"
+                "-message" message))
+#+END_SRC
+** Org
+#+BEGIN_SRC emacs-lisp
+(defun find-file-in-org ()
+  "Search for a file in `org-directory'."
+  (interactive)
+  (doom-project-find-file org-directory))
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun org-insert-img-link ()
+  "Inserts default img attributes and asks for img link."
+  (interactive)
+  (insert "#+attr_html: :width 800px\n#+attr_latex: :width 800px\n")
+  (org-insert-link))
+#+END_SRC
