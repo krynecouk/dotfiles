@@ -89,6 +89,23 @@
       "before": ["<esc>", "<esc>"],
       "commands": ["notifications.clearAll", ":only", ":noh"]
     },
+    {
+      "before": ["Y"],
+      "commands": [
+        {
+          "command": "cursorEndSelect",
+          "when": "textInputFocus",
+          "args": { "sticky": false }
+        },
+        {
+          "command": "execCopy"
+        },
+        {
+          "command": "cancelSelection",
+          "when": "editorHasSelection && textInputFocus"
+        }
+      ]
+    },
     // Project
     {
       "before": ["<leader>", "p", "p"],

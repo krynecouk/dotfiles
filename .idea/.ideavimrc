@@ -51,15 +51,13 @@ nmap gs :action GotoSuperMethod<cr>
 nmap gu :action ShowUsages<cr>
 nmap gU :action FindUsages<cr>
 nmap gr :action ReformatCode<cr>
-nmap gc :action HideAllWindows<cr>
 nmap g] :action GotoNextError<cr>
 nmap g[ :action GotoPreviousError<cr>
 nmap K :action QuickImplementations<cr>
 
-
 " Project
-nmap <leader>pr :action Run<cr>
-nmap <leader>pd :action Debug<cr>
+nmap <leader>pr :action ChooseRunConfiguration<cr>
+nmap <leader>pd :action ChooseDebugConfiguration<cr>
 nmap <leader>ps :action Stop<cr>
 nmap <leader>pp :action OpenProjectWindows<cr>
 nmap <leader>p` :action NextProjectWindow<cr>
@@ -67,11 +65,13 @@ nmap <leader>pw :action SaveAll<cr>
 nmap <leader>pb :action ToggleLineBreakpoint<cr>
 
 " Windows
-nmap <leader>T :action ActivateTerminalToolWindow<cr>
+nmap <leader>ot :action ActivateTerminalToolWindow<cr>
+nmap <leader>or :action ActivateRunToolWindow<cr>
+nmap <leader>od :action ActivateDebugToolWindow<cr>
+
 " nmap <leader>tt :NERDTreeToggle<CR>
 nmap <leader>tt :action ActivateProjectToolWindow<cr>
-nmap <leader>w :action HideAllWindows<cr>
-" nmap <leader>o :action HideActiveWindow<cr>
+nnoremap <esc><esc> :action HideAllWindows<cr>
 nmap <leader>tz :action ToggleDistractionFreeMode<cr>
 
 " Formatting
