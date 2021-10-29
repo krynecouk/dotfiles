@@ -4,7 +4,7 @@ set rnu
 set scrolloff=1
 set noshowmode
 
-set clipboard=unnamed
+set clipboard=unnamedplus
 
 " Search
 set hlsearch
