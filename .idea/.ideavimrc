@@ -71,16 +71,17 @@ nmap <leader>od :action ActivateDebugToolWindow<cr>
 
 " nmap <leader>tt :NERDTreeToggle<CR>
 nmap <leader>tt :action ActivateProjectToolWindow<cr>
-nnoremap <esc><esc> :action HideAllWindows<cr>
+nnoremap <esc><esc> :action HideAllWindows<cr>:action MarkNotificationsAsRead<cr>
 nmap <leader>tz :action ToggleDistractionFreeMode<cr>
 
 " Formatting
 " nmap <M-cr> :action Refactorings.QuickListPopupAction<cr>
-nmap <M-cr> :action Generate<cr>
+" nmap <M-cr> :action Generate<cr>
+nmap <M-cr> :action ShowIntentionActions<cr>
+vmap <M-cr> :action ShowIntentionActions<cr>
 nmap <leader>ff :action ReformatCode<cr>
 nmap R :action RenameElement<cr>
 nmap <C-j> :action MoveLineDown<cr>
 nmap <C-k> :action MoveLineUp<cr>
 vmap <C-j> :action MoveLineDown<cr>
 vmap <C-k> :action MoveLineUp<cr>
-

@@ -2,20 +2,7 @@
   // General -----------------------------------
   "editor.suggestSelection": "first",
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
-
-  // Lang --------------------------------------
-  "java.home": "/usr/local/opt/openjdk@11",
-  "files.exclude": {
-    "**/.classpath": true,
-    "**/.project": true,
-    "**/.settings": true,
-    "**/.factorypath": true
-  },
-  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx1G -Xms100m -javaagent:\"/Users/darius.kryszczuk/.vscode/extensions/gabrielbb.vscode-lombok-1.0.1/server/lombok.jar\"",
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
+  "files.autoSave": "afterDelay",
 
   // Appearance --------------------------------
   "workbench.colorTheme": "Default Dark+",
@@ -25,7 +12,6 @@
   "zenMode.hideStatusBar": false,
   "workbench.editor.showTabs": false,
   "workbench.editor.enablePreview": false,
-  "workbench.activityBar.visible": false,
   "explorer.openEditors.visible": 0,
   "vim.statusBarColorControl": false,
   "editor.minimap.enabled": false,
@@ -90,6 +76,14 @@
       "commands": ["notifications.clearAll", ":only", ":noh"]
     },
     {
+      "before": ["<C-x>", "<C-f>"],
+      "commands": ["workbench.action.quickOpen"]
+    },
+    {
+      "before": ["<C-x>", "<C-r>"],
+      "commands": ["renameFile"]
+    },
+    {
       "before": ["Y"],
       "commands": [
         {
@@ -142,5 +136,10 @@
       "before": ["<leader>", "f", "f"],
       "commands": ["editor.action.formatSelection"]
     }
-  ]
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "workbench.activityBar.visible": false,
+  "vscode-neovim.neovimExecutablePaths.darwin": "/usr/local/bin/nvim"
 }

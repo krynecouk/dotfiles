@@ -1,4 +1,6 @@
 [
+  // https://marketplace.visualstudio.com/items?itemName=vscodevim.vim
+  // https://code.visualstudio.com/api/references/when-clause-contexts
   // Editor ---------------------------------------
   {
     "key": "escape",
@@ -6,18 +8,14 @@
     "when": "!editorTextFocus"
   },
   {
-    "key": "shift+r",
-    "command": "renameFile",
-    "when": "explorerViewletVisible && filesExplorerFocus"
+    "key": "ctrl+g",
+    "command": "workbench.action.focusActiveEditorGroup",
+    "when": "!editorTextFocus"
   },
   {
     "key": "enter",
     "command": "list.select",
     "when": "listFocus && !inputFocus"
-  },
-  {
-    "key": "cmd+f",
-    "command": "" // TODO replace for vim.search
   },
   {
     "key": "cmd+x",
