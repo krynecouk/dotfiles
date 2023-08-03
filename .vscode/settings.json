@@ -1,11 +1,11 @@
 {
   // General -----------------------------------
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "files.trimTrailingWhitespace": true,
   "editor.suggestSelection": "first",
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "files.autoSave": "afterDelay",
-
-  // Appearance --------------------------------
-  "workbench.colorTheme": "Default Dark+",
   "editor.lineNumbers": "relative",
   "zenMode.hideLineNumbers": false,
   "zenMode.fullScreen": false,
@@ -18,6 +18,7 @@
   "ActiveFileInStatusBar.enable": true,
   "ActiveFileInStatusBar.fullpath": false,
   "ActiveFileInStatusBar.revealFile": false,
+  "window.nativeTabs": true,
 
   // Vim ---------------------------------------
   "vim.useCtrlKeys": true,
@@ -55,6 +56,10 @@
       "commands": ["editor.action.goToReferences"]
     },
     {
+      "before": ["g", "r"],
+      "commands": ["editor.action.goToReferences"]
+    },
+    {
       "before": ["g", "]"],
       "commands": ["editor.action.marker.nextInFiles"]
     },
@@ -71,6 +76,10 @@
       "commands": ["editor.action.codeAction"]
     },
     // Editor
+    {
+      "before": ["<C-g>"],
+      "commands": ["leaveEditorMessage"]
+    },
     {
       "before": ["<esc>", "<esc>"],
       "commands": ["notifications.clearAll", ":only", ":noh"]
@@ -137,9 +146,39 @@
       "commands": ["editor.action.formatSelection"]
     }
   ],
+  "vim.commandLineModeKeyBindingsNonRecursive": [
+    {
+      "before": [":o"],
+      "commands": [":only"]
+    }
+  ],
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "workbench.activityBar.visible": false,
-  "vscode-neovim.neovimExecutablePaths.darwin": "/usr/local/bin/nvim"
+  "vscode-neovim.neovimExecutablePaths.darwin": "/usr/local/bin/nvim",
+  "workbench.startupEditor": "none",
+  "playwright.reuseBrowser": true,
+  "svelte.enable-ts-plugin": true,
+  "editor.inlineSuggest.enabled": true,
+  "editor.guides.indentation": false,
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true
+  },
+  "playwright.showTrace": false,
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "workbench.layoutControl.enabled": false,
+  "python.formatting.provider": "black",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
+  "python.testing.pytestArgs": ["tests"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }
