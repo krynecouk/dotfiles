@@ -23,10 +23,19 @@
   "workbench.activityBar.visible": false,
   "workbench.startupEditor": "none",
   "workbench.layoutControl.enabled": false,
+  "workbench.tree.renderIndentGuides": "none",
+  "workbench.panel.defaultLocation": "right",
 
   "explorer.openEditors.visible": 1,
   "window.nativeTabs": true,
   "security.workspace.trust.untrustedFiles": "open",
+
+  // Theme -----------------------------------
+  "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 12.5,
+  "editor.fontWeight": "500",
+  "workbench.colorTheme": "Dracula",
 
   // Vim ---------------------------------------
   "vim.statusBarColorControl": false,
@@ -132,6 +141,10 @@
       "commands": ["workbench.action.terminal.focus"]
     },
     {
+      "key": ["ctrl+`"],
+      "command": "workbench.action.terminal.toggleTerminal"
+    },
+    {
       "before": ["<leader>", "t", "t"],
       "commands": ["workbench.view.explorer"]
     },
@@ -181,5 +194,5 @@
   "python.formatting.provider": "black",
   "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true
+  "python.testing.pytestEnabled": true,
 }
