@@ -188,11 +188,6 @@
 
   // Code -----------------------------------------
   {
-    "key": "shift+k",
-    "command": "editor.action.showHover",
-    "when": "editorTextFocus"
-  },
-  {
     "key": "ctrl+.",
     "command": "editor.action.triggerSuggest",
     "when": "editorHasCompletionItemProvider && editorTextFocus && !editorReadonly"

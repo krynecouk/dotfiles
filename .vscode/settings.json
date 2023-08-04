@@ -4,12 +4,12 @@
   "editor.tabSize": 2,
   "editor.lineNumbers": "relative",
   "editor.suggestSelection": "first",
-  "editor.minimap.enabled": false,
   "editor.inlineSuggest.enabled": true,
   "editor.guides.indentation": false,
   "editor.codeActionsOnSave": {
     "source.organizeImports": true
   },
+  "git.decorations.enabled": false,
 
   "files.trimTrailingWhitespace": true,
   "files.autoSave": "afterDelay",
@@ -78,9 +78,13 @@
     },
     {
       "before": ["m"],
-      "commands": ["bookmarks.toggle"]
+      "commands": ["bookmarks.toggleLabeled"]
     },
     // Code
+    {
+      "before": ["K"],
+      "commands": ["editor.action.showHover"]
+    },
     {
       "before": ["g", "u"],
       "commands": ["editor.action.goToReferences"]
@@ -195,4 +199,5 @@
   "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
+  "editor.minimap.enabled": false
 }
