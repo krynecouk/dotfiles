@@ -132,7 +132,17 @@
     "command": "workbench.action.hideComment",
     "when": "commentEditorFocused"
   },
+  {
+    "key": "ctrl+g",
+    "command": "workbench.action.hideErrorsWarnings",
+    "when": "commentEditorFocused"
+  },
   // File Tree
+  {
+    "key": "ctrl+t",
+    "command": "workbench.action.focusActiveEditorGroup",
+    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
+  },
   {
     "key": "ctrl+c ctrl+r",
     "command": "renameFile",
@@ -183,7 +193,7 @@
   },
   {
     "key": "cmd+1",
-    "command": "workbench.action.toggleSidebarVisibility",
+    "command": "workbench.action.toggleSidebarVisibility"
   },
 
   // Code -----------------------------------------
@@ -201,6 +211,18 @@
     "command": "editor.action.rename",
     "when": "editorHasRenameProvider && editorTextFocus && !editorReadonly"
   },
+  {
+    "key": "ctrl+c ctrl+t",
+    "command": "extension.multiCommand.execute",
+    "args": {
+      "sequence": [
+        "workbench.view.extension.test",
+        "test-explorer.run-test-at-cursor",
+        "workbench.action.focusActiveEditorGroup"
+      ]
+    },
+    "when": "editorFocus"
+  },
 
   // Navigation -----------------------------------
   {
@@ -209,7 +231,7 @@
   },
   {
     "key": "cmd+t",
-    "command": "workbench.action.switchWindow"
+    "command": "workbench.action.openRecent"
   },
   {
     "key": "shift+cmd+t",
@@ -313,5 +335,5 @@
     "key": "ctrl+w ctrl+w",
     "command": "workbench.action.focusActiveEditorGroup",
     "when": "terminalFocus"
-  },
+  }
 ]

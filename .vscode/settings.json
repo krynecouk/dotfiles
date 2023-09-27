@@ -9,6 +9,7 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports": true
   },
+  "editor.smoothScrolling": true,
   "git.decorations.enabled": false,
 
   "files.trimTrailingWhitespace": true,
@@ -20,11 +21,11 @@
 
   "workbench.editor.showTabs": false,
   "workbench.editor.enablePreview": false,
-  "workbench.activityBar.visible": false,
   "workbench.startupEditor": "none",
   "workbench.layoutControl.enabled": false,
   "workbench.tree.renderIndentGuides": "none",
   "workbench.panel.defaultLocation": "right",
+  "window.openFoldersInNewWindow": "on",
 
   "explorer.openEditors.visible": 1,
   "window.nativeTabs": true,
@@ -77,6 +78,10 @@
       "commands": ["bookmarks.listFromAllFiles"]
     },
     {
+      "before": ["\""],
+      "commands": ["clipring.selectAndPasteRingItem"]
+    },
+    {
       "before": ["m"],
       "commands": ["bookmarks.toggleLabeled"]
     },
@@ -103,7 +108,14 @@
     },
     {
       "before": ["<leader>", "f", "f"],
-      "commands": ["editor.action.formatDocument"]
+      "commands": [
+        {
+          "command": "editor.action.formatDocument"
+        },
+        {
+          "command": "python.sortImports"
+        }
+      ]
     },
     {
       "before": ["<leader>", "c", "a"],
@@ -136,6 +148,10 @@
       "commands": ["workbench.action.openRecent"]
     },
     {
+      "before": ["<leader>", "p", "o"],
+      "commands": ["workbench.action.files.openFileFolder"]
+    },
+    {
       "before": ["<leader>", "p", "w"],
       "commands": ["workbench.action.files.saveAll"]
     },
@@ -145,16 +161,34 @@
       "commands": ["workbench.action.terminal.focus"]
     },
     {
-      "key": ["ctrl+`"],
-      "command": "workbench.action.terminal.toggleTerminal"
+      "before": ["ctrl+`"],
+      "commands": ["workbench.action.terminal.toggleTerminal"]
     },
     {
       "before": ["<leader>", "t", "t"],
       "commands": ["workbench.view.explorer"]
     },
     {
+      "before": ["ctrl+t"],
+      "commands": ["workbench.view.explorer"]
+    },
+    {
       "before": ["<leader>", "t", "s"],
       "commands": ["workbench.action.toggleActivityBarVisibility"]
+    },
+    {
+      "before": ["<leader>", "p", "t"],
+      "commands": [
+        {
+          "command": "workbench.view.extension.test"
+        },
+        {
+          "command": "test-explorer.run-all"
+        },
+        {
+          "command": "workbench.action.focusActiveEditorGroup"
+        }
+      ]
     },
     {
       "before": ["<leader>", "o", "o"],
@@ -195,9 +229,18 @@
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true
   },
-  "python.formatting.provider": "black",
   "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
-  "editor.minimap.enabled": false
+  "editor.minimap.enabled": false,
+  "workbench.activityBar.visible": false,
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
