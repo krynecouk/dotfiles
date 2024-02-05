@@ -2,21 +2,84 @@
   // https://marketplace.visualstudio.com/items?itemName=vscodevim.vim
   // https://code.visualstudio.com/api/references/when-clause-contexts
 
-  // Editor ---------------------------------------
+  // Editor
+  {
+    "key": "cmd+x",
+    "command": "workbench.action.showCommands"
+  },
   {
     "key": "escape",
     "command": "workbench.action.focusActiveEditorGroup",
     "when": "!editorTextFocus"
   },
+  // Code
   {
-    "key": "enter",
-    "command": "list.select",
-    "when": "listFocus && !inputFocus"
+    "key": "ctrl+.",
+    "command": "editor.action.triggerSuggest",
+    "when": "editorHasCompletionItemProvider && editorTextFocus && !editorReadonly"
   },
   {
-    "key": "cmd+x",
-    "command": "workbench.action.showCommands"
+    "key": "cmd+enter",
+    "command": "editor.action.quickFix"
   },
+  {
+    "key": "ctrl+c ctrl+r",
+    "command": "editor.action.rename",
+    "when": "editorHasRenameProvider && editorTextFocus && !editorReadonly"
+  },
+  // File Tree
+  {
+    "key": "ctrl+c ctrl+r",
+    "command": "renameFile",
+    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
+  },
+  {
+    "key": "cmd+1",
+    "command": "workbench.action.toggleSidebarVisibility"
+  },
+  // Navigation
+  {
+    "key": "ctrl+x ctrl+f",
+    "command": "workbench.action.files.openFile"
+  },
+  {
+    "key": "cmd+t",
+    "command": "workbench.action.openRecent"
+  },
+  // Github Copilot
+  {
+    "key": "ctrl+g",
+    "command": "inlineChat.cancel",
+    "when": "inlineChatHasProvider && inlineChatVisible"
+  },
+  {
+    "key": "cmd+enter",
+    "command": "inlineChat.viewInChat",
+    "when": "inlineChatHasProvider && inlineChatVisible"
+  },
+  {
+    "key": "cmd+enter",
+    "command": "workbench.action.quickchat.openInChatView",
+    "when": "inQuickOpen"
+  },
+  {
+    "key": "cmd+0",
+    "command": "workbench.action.togglePanel",
+    "args": {
+      "panelId": "terminal"
+    }
+  },
+  // Terminal
+  {
+    "key": "cmd+t",
+    "command": "workbench.action.quickOpenTerm",
+    "when": "terminalFocus"
+  },
+  {
+    "key": "cmd+r",
+    "command": "workbench.action.terminal.rename",
+    "when": "terminalFocus"
+  }
   // <C-g>
   {
     "key": "ctrl+g",
@@ -137,111 +200,6 @@
     "command": "workbench.action.hideErrorsWarnings",
     "when": "commentEditorFocused"
   },
-  // File Tree
-  {
-    "key": "ctrl+t",
-    "command": "workbench.action.focusActiveEditorGroup",
-    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
-  },
-  {
-    "key": "ctrl+c ctrl+r",
-    "command": "renameFile",
-    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
-  },
-  {
-    "key": "ctrl+c ctrl+y",
-    "command": "extension.multiCommand.execute",
-    "args": {
-      "sequence": ["filesExplorer.copy", "filesExplorer.paste"]
-    },
-    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
-  },
-  {
-    "key": "shift+enter",
-    "command": "explorer.openToSide",
-    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
-  },
-  {
-    "key": "ctrl+w ctrl+w",
-    "command": "workbench.action.focusActiveEditorGroup",
-    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
-  },
-  {
-    "key": "ctrl+c ctrl+v",
-    "command": "filesExplorer.paste",
-    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
-  },
-  {
-    "key": "ctrl+c ctrl+m",
-    "command": "filesExplorer.cut",
-    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
-  },
-  {
-    "key": "ctrl+c ctrl+x",
-    "command": "deleteFile",
-    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
-  },
-  {
-    "key": "ctrl+c ctrl+c",
-    "command": "explorer.newFile",
-    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
-  },
-  {
-    "key": "ctrl+c ctrl+d",
-    "command": "explorer.newFolder",
-    "when": "explorerViewletVisible && filesExplorerFocus && !inputFocus"
-  },
-  {
-    "key": "cmd+1",
-    "command": "workbench.action.toggleSidebarVisibility"
-  },
-
-  // Code -----------------------------------------
-  {
-    "key": "ctrl+.",
-    "command": "editor.action.triggerSuggest",
-    "when": "editorHasCompletionItemProvider && editorTextFocus && !editorReadonly"
-  },
-  {
-    "key": "cmd+enter",
-    "command": "editor.action.quickFix"
-  },
-  {
-    "key": "ctrl+c ctrl+r",
-    "command": "editor.action.rename",
-    "when": "editorHasRenameProvider && editorTextFocus && !editorReadonly"
-  },
-  {
-    "key": "ctrl+c ctrl+t",
-    "command": "extension.multiCommand.execute",
-    "args": {
-      "sequence": [
-        "workbench.view.extension.test",
-        "test-explorer.run-test-at-cursor",
-        "workbench.action.focusActiveEditorGroup"
-      ]
-    },
-    "when": "editorFocus"
-  },
-
-  // Navigation -----------------------------------
-  {
-    "key": "ctrl+x ctrl+f",
-    "command": "workbench.action.files.openFile"
-  },
-  {
-    "key": "cmd+t",
-    "command": "workbench.action.openRecent"
-  },
-  {
-    "key": "shift+cmd+t",
-    "command": "workbench.action.newWindow"
-  },
-  {
-    "key": "cmd+`",
-    "command": "workbench.action.showPreviousWindowTab"
-  },
-
   // <C-j> and <C-k>
   {
     "key": "ctrl+j",
@@ -337,45 +295,5 @@
   {
     "key": "ctrl+u x",
     "command": "-magit.reset-hard"
-  },
-  // Github Copilot
-  {
-    "key": "ctrl+g",
-    "command": "inlineChat.cancel",
-    "when": "inlineChatHasProvider && inlineChatVisible"
-  },
-  {
-    "key": "cmd+enter",
-    "command": "inlineChat.viewInChat",
-    "when": "inlineChatHasProvider && inlineChatVisible"
-  },
-  {
-    "key": "cmd+enter",
-    "command": "workbench.action.quickchat.openInChatView",
-    "when": "inQuickOpen"
-  },
-  {
-    "key": "cmd+0",
-    "command": "workbench.action.togglePanel",
-    "args": {
-      "panelId": "terminal"
-    }
-  },
-
-  // Terminal -----------------------------------
-  {
-    "key": "cmd+t",
-    "command": "workbench.action.quickOpenTerm",
-    "when": "terminalFocus"
-  },
-  {
-    "key": "cmd+r",
-    "command": "workbench.action.terminal.rename",
-    "when": "terminalFocus"
-  },
-  {
-    "key": "ctrl+w ctrl+w",
-    "command": "workbench.action.focusActiveEditorGroup",
-    "when": "terminalFocus"
   }
 ]

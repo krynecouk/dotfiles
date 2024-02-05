@@ -15,10 +15,6 @@
   "files.trimTrailingWhitespace": true,
   "files.autoSave": "afterDelay",
 
-  "zenMode.hideLineNumbers": false,
-  "zenMode.fullScreen": false,
-  "zenMode.hideStatusBar": false,
-
   "workbench.editor.showTabs": "single",
   "workbench.startupEditor": "none",
   "workbench.layoutControl.enabled": false,
@@ -32,11 +28,14 @@
   "security.workspace.trust.untrustedFiles": "open",
 
   // Theme -----------------------------------
-  "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace",
-  "editor.fontLigatures": true,
-  "editor.fontSize": 12.5,
-  "editor.fontWeight": "500",
-  "workbench.colorTheme": "Dracula",
+  // "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace",
+  // "editor.fontLigatures": true,
+  // "editor.fontSize": 12.5,
+  // "editor.fontWeight": "500",
+  "editor.fontSize": 14,
+  // "editor.lineHeight": 30,
+  "editor.fontFamily": "JetBrains Mono",
+  "workbench.colorTheme": "One Dark Pro Mix",
 
   // Vim ---------------------------------------
   "vim.statusBarColorControl": false,
@@ -54,24 +53,13 @@
       "commands": ["notifications.clearAll", ":only", ":noh"]
     },
     {
-      "before": ["<leader>", "<leader>"],
-      "commands": ["workbench.action.quickOpen"]
-    },
-    {
-      "before": ["<leader>", "*"],
-      "commands": ["workbench.action.findInFiles"]
-    },
-    {
       "before": ["<leader>", ","],
       "commands": [
         "workbench.action.showAllEditorsByMostRecentlyUsed",
         "workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup"
       ]
     },
-    {
-      "before": ["<leader>", "*"],
-      "commands": ["workbench.action.findInFiles"]
-    },
+    // Bookmarks
     {
       "before": ["'"],
       "commands": ["bookmarks.listFromAllFiles"]
@@ -90,8 +78,12 @@
       "commands": ["editor.action.showHover"]
     },
     {
-      "before": ["g", "u"],
-      "commands": ["editor.action.goToReferences"]
+      "before": ["g", "s"],
+      "commands": ["workbench.action.gotoSymbol"]
+    },
+    {
+      "before": ["g", "S"],
+      "commands": ["workbench.action.showAllSymbols"]
     },
     {
       "before": ["g", "r"],
@@ -115,10 +107,6 @@
           "command": "python.sortImports"
         }
       ]
-    },
-    {
-      "before": ["<leader>", "c", "a"],
-      "commands": ["editor.action.codeAction"]
     },
     {
       "before": ["<leader>", "g", "g"],
@@ -168,10 +156,6 @@
       "commands": ["workbench.view.explorer"]
     },
     {
-      "before": ["<leader>", "o", "d"],
-      "commands": ["workbench.view.extension.github-cweijan-mysql"]
-    },
-    {
       "before": ["ctrl+t"],
       "commands": ["workbench.action.toggleSidebarVisibility"]
     },
@@ -198,18 +182,6 @@
       ]
     },
     {
-      "before": ["<leader>", "o", "o"],
-      "commands": ["notifications.clearAll", ":only", ":noh"]
-    },
-    {
-      "before": ["<leader>", "t", "F"],
-      "commands": ["workbench.action.toggleFullScreen"]
-    },
-    {
-      "before": ["<leader>", "t", "z"],
-      "commands": ["workbench.action.toggleZenMode"]
-    },
-    {
       "before": ["<leader>", "c", "c"],
       "commands": ["workbench.panel.chat.view.copilot.focus"]
     }
@@ -222,7 +194,6 @@
   ],
 
   // Lang ---------------------------------------
-  // Web
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
@@ -235,9 +206,9 @@
   },
   "playwright.reuseBrowser": true,
   "playwright.showTrace": false,
-  // Python
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
+
     "editor.formatOnSave": true
   },
   "python.testing.pytestArgs": ["tests"],
@@ -257,15 +228,16 @@
   "nxConsole.showNodeVersionOnStartup": false,
   "database-client.telemetry.usesOnlineServices": false,
   "window.titleBarStyle": "custom",
-  "hiddenlemetry": false,
-  "aws.resources.enabledResources": [
-    "AWS::DynamoDB::GlobalTable",
-    "AWS::DynamoDB::Table"
-  ],
-  "workbench.activityBar.location": "hidden",
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "markdown-preview-enhanced.liveUpdate": true,
   "debug.onTaskErrors": "debugAnyway",
-  "explorer.confirmDragAndDrop": false
+  "explorer.confirmDragAndDrop": false,
+  "workbench.activityBar.location": "hidden",
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  }
 }

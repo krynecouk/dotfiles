@@ -1,10 +1,17 @@
 # Personal Visual Studio Code configuration
 
-## Prerequisites
+## Plugins
 
-- [vscode](https://code.visualstudio.com/)
 - [vscodevim](https://marketplace.visualstudio.com/items?itemName=vscodevim.vim)
-
+- [Bookmarks](https://marketplace.visualstudio.com/items?itemName=alefragnani.Bookmarks)
+- [Multi-command](https://marketplace.visualstudio.com/items?itemName=ryuta46.multi-command)
+- [One-Dark Plus](https://marketplace.visualstudio.com/items?itemName=zhuangtongfa.Material-theme)
+- [edamagit](https://marketplace.visualstudio.com/items?itemName=kahole.magit)
+- [JetBrains Mono](https://www.jetbrains.com/lp/mono/)
+- [Github Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot)
+- [Github Copilot Chat](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat)
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [Gitlab Workflow](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) (Optional)
 ## Installation (Mac)
 
 ```sh
