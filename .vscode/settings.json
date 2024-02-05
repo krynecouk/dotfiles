@@ -7,7 +7,7 @@
   "editor.inlineSuggest.enabled": true,
   "editor.guides.indentation": false,
   "editor.codeActionsOnSave": {
-    "source.organizeImports": true
+    "source.organizeImports": "explicit"
   },
   "editor.smoothScrolling": true,
   "git.decorations.enabled": false,
@@ -19,13 +19,13 @@
   "zenMode.fullScreen": false,
   "zenMode.hideStatusBar": false,
 
-  "workbench.editor.showTabs": false,
-  "workbench.editor.enablePreview": false,
+  "workbench.editor.showTabs": "single",
   "workbench.startupEditor": "none",
   "workbench.layoutControl.enabled": false,
   "workbench.tree.renderIndentGuides": "none",
   "workbench.panel.defaultLocation": "right",
   "window.openFoldersInNewWindow": "on",
+  "terminal.integrated.shellIntegration.history": 3000,
 
   "explorer.openEditors.visible": 1,
   "window.nativeTabs": true,
@@ -45,7 +45,6 @@
   "vim.incsearch": true,
   "vim.smartcase": true,
   "vim.useSystemClipboard": true,
-
   // Bindings
   "vim.leader": "<space>",
   "vim.normalModeKeyBindingsNonRecursive": [
@@ -169,11 +168,19 @@
       "commands": ["workbench.view.explorer"]
     },
     {
+      "before": ["<leader>", "o", "d"],
+      "commands": ["workbench.view.extension.github-cweijan-mysql"]
+    },
+    {
       "before": ["ctrl+t"],
-      "commands": ["workbench.view.explorer"]
+      "commands": ["workbench.action.toggleSidebarVisibility"]
     },
     {
       "before": ["<leader>", "t", "s"],
+      "commands": ["workbench.action.toggleActivityBarVisibility"]
+    },
+    {
+      "before": ["<leader>", "o", "s"],
       "commands": ["workbench.action.toggleActivityBarVisibility"]
     },
     {
@@ -201,6 +208,10 @@
     {
       "before": ["<leader>", "t", "z"],
       "commands": ["workbench.action.toggleZenMode"]
+    },
+    {
+      "before": ["<leader>", "c", "c"],
+      "commands": ["workbench.panel.chat.view.copilot.focus"]
     }
   ],
   "vim.visualModeKeyBindings": [
@@ -232,8 +243,8 @@
   "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
+  "python.linting.flake8Args": ["--max-line-length=81"],
   "editor.minimap.enabled": false,
-  "workbench.activityBar.visible": false,
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -242,5 +253,19 @@
   },
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "nxConsole.showNodeVersionOnStartup": false,
+  "database-client.telemetry.usesOnlineServices": false,
+  "window.titleBarStyle": "custom",
+  "hiddenlemetry": false,
+  "aws.resources.enabledResources": [
+    "AWS::DynamoDB::GlobalTable",
+    "AWS::DynamoDB::Table"
+  ],
+  "workbench.activityBar.location": "hidden",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "markdown-preview-enhanced.liveUpdate": true,
+  "debug.onTaskErrors": "debugAnyway",
+  "explorer.confirmDragAndDrop": false
 }
