@@ -22,6 +22,7 @@
   "workbench.panel.defaultLocation": "right",
   "window.openFoldersInNewWindow": "on",
   "terminal.integrated.shellIntegration.history": 3000,
+  "terminal.integrated.defaultProfile.osx": "zsh",
 
   "explorer.openEditors.visible": 1,
   "window.nativeTabs": true,
@@ -29,13 +30,13 @@
 
   // Theme -----------------------------------
   // "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace",
-  // "editor.fontLigatures": true,
+  "editor.fontLigatures": true,
   // "editor.fontSize": 12.5,
   // "editor.fontWeight": "500",
   "editor.fontSize": 14,
+  "workbench.colorTheme": "One Dark Pro Mix",
   // "editor.lineHeight": 30,
   "editor.fontFamily": "JetBrains Mono",
-  "workbench.colorTheme": "One Dark Pro Mix",
 
   // Vim ---------------------------------------
   "vim.statusBarColorControl": false,
@@ -96,6 +97,18 @@
     {
       "before": ["g", "["],
       "commands": ["editor.action.marker.prevInFiles"]
+    },
+    {
+      "before": ["g", "f"],
+      "commands": ["workbench.action.quickTextSearch"]
+    },
+    {
+      "before": ["g", "/"],
+      "commands": ["workbench.action.quickTextSearch"]
+    },
+    {
+      "before": ["g", "?"],
+      "commands": ["workbench.action.quickTextSearch"]
     },
     {
       "before": ["<leader>", "f", "f"],
@@ -190,6 +203,10 @@
     {
       "before": ["<leader>", "f", "f"],
       "commands": ["editor.action.formatSelection"]
+    },
+    {
+      "before": ["<leader>", "c", "c"],
+      "commands": ["workbench.panel.chat.view.copilot.focus"]
     }
   ],
 
@@ -207,8 +224,7 @@
   "playwright.reuseBrowser": true,
   "playwright.showTrace": false,
   "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
-
+    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true
   },
   "python.testing.pytestArgs": ["tests"],
@@ -230,14 +246,21 @@
   "window.titleBarStyle": "custom",
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.tsserver.maxTsServerMemory": 5128,
   "markdown-preview-enhanced.liveUpdate": true,
   "debug.onTaskErrors": "debugAnyway",
   "explorer.confirmDragAndDrop": false,
-  "workbench.activityBar.location": "hidden",
+  "workbench.activityBar.location": "top",
   "github.copilot.enable": {
-    "*": false,
+    "*": true,
     "plaintext": false,
     "markdown": false,
     "scminput": false
-  }
+  },
+  "window.commandCenter": false,
+  "extensions.ignoreRecommendations": true,
+  "github.copilot.editor.enableAutoCompletions": true,
+  "jupyter.interactiveWindow.creationMode": "perFile",
+  "interactiveWindow.executeWithShiftEnter": true,
+  "explorer.confirmDelete": false
 }

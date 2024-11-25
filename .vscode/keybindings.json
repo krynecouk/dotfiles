@@ -4,6 +4,11 @@
 
   // Editor
   {
+    "key": "enter",
+    "command": "list.select",
+    "when": "listFocus && !inputFocus"
+  },
+  {
     "key": "cmd+x",
     "command": "workbench.action.showCommands"
   },
@@ -36,6 +41,14 @@
   {
     "key": "cmd+1",
     "command": "workbench.action.toggleSidebarVisibility"
+  },
+  {
+    "key": "cmd+2",
+    "command": "workbench.action.toggleAuxiliaryBar"
+  },
+  {
+    "key": "cmd+0",
+    "command": "workbench.action.toggleAuxiliaryBar"
   },
   // Navigation
   {
@@ -79,7 +92,7 @@
     "key": "cmd+r",
     "command": "workbench.action.terminal.rename",
     "when": "terminalFocus"
-  }
+  },
   // <C-g>
   {
     "key": "ctrl+g",
