@@ -15,7 +15,7 @@
   "files.trimTrailingWhitespace": true,
   "files.autoSave": "afterDelay",
 
-  "workbench.editor.showTabs": "single",
+  "workbench.editor.showTabs": "none",
   "workbench.startupEditor": "none",
   "workbench.layoutControl.enabled": false,
   "workbench.tree.renderIndentGuides": "none",
@@ -23,6 +23,7 @@
   "window.openFoldersInNewWindow": "on",
   "terminal.integrated.shellIntegration.history": 3000,
   "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.suggest.enabled": true,
 
   "explorer.openEditors.visible": 1,
   "window.nativeTabs": true,
@@ -31,10 +32,9 @@
   // Theme -----------------------------------
   // "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace",
   "editor.fontLigatures": true,
-  // "editor.fontSize": 12.5,
-  // "editor.fontWeight": "500",
+  "editor.fontWeight": "400",
   "editor.fontSize": 14,
-  "workbench.colorTheme": "One Dark Pro Mix",
+  "workbench.colorTheme": "GitHub Dark Default",
   // "editor.lineHeight": 30,
   "editor.fontFamily": "JetBrains Mono",
 
@@ -49,10 +49,6 @@
   "vim.leader": "<space>",
   "vim.normalModeKeyBindingsNonRecursive": [
     // Navigation
-    {
-      "before": ["<esc>", "<esc>"],
-      "commands": ["notifications.clearAll", ":only", ":noh"]
-    },
     {
       "before": ["<leader>", ","],
       "commands": [
@@ -91,6 +87,10 @@
       "commands": ["editor.action.goToReferences"]
     },
     {
+      "before": ["g", "i"],
+      "commands": ["editor.action.goToImplementation"]
+    },
+    {
       "before": ["g", "]"],
       "commands": ["editor.action.marker.nextInFiles"]
     },
@@ -99,15 +99,7 @@
       "commands": ["editor.action.marker.prevInFiles"]
     },
     {
-      "before": ["g", "f"],
-      "commands": ["workbench.action.quickTextSearch"]
-    },
-    {
       "before": ["g", "/"],
-      "commands": ["workbench.action.quickTextSearch"]
-    },
-    {
-      "before": ["g", "?"],
       "commands": ["workbench.action.quickTextSearch"]
     },
     {
@@ -125,52 +117,23 @@
       "before": ["<leader>", "g", "g"],
       "commands": ["magit.status"]
     },
-    {
-      "before": ["Y"],
-      "commands": [
-        {
-          "command": "cursorEndSelect",
-          "when": "textInputFocus",
-          "args": { "sticky": false }
-        },
-        {
-          "command": "execCopy"
-        },
-        {
-          "command": "cancelSelection",
-          "when": "editorHasSelection && textInputFocus"
-        }
-      ]
-    },
     // Project
-    {
-      "before": ["<leader>", "p", "p"],
-      "commands": ["workbench.action.openRecent"]
-    },
-    {
-      "before": ["<leader>", "p", "o"],
-      "commands": ["workbench.action.files.openFileFolder"]
-    },
     {
       "before": ["<leader>", "p", "w"],
       "commands": ["workbench.action.files.saveAll"]
     },
     // Open/Toggle
     {
-      "before": ["<leader>", "o", "t"],
-      "commands": ["workbench.action.terminal.focus"]
-    },
-    {
       "before": ["ctrl+`"],
       "commands": ["workbench.action.terminal.toggleTerminal"]
     },
     {
-      "before": ["<leader>", "t", "t"],
-      "commands": ["workbench.view.explorer"]
+      "before": ["ctrl+."],
+      "commands": ["editor.action.triggerSuggest"],
     },
     {
-      "before": ["ctrl+t"],
-      "commands": ["workbench.action.toggleSidebarVisibility"]
+      "before": ["<leader>", "t", "t"],
+      "commands": ["workbench.view.explorer"]
     },
     {
       "before": ["<leader>", "t", "s"],
@@ -179,34 +142,12 @@
     {
       "before": ["<leader>", "o", "s"],
       "commands": ["workbench.action.toggleActivityBarVisibility"]
-    },
-    {
-      "before": ["<leader>", "p", "t"],
-      "commands": [
-        {
-          "command": "workbench.view.extension.test"
-        },
-        {
-          "command": "test-explorer.run-all"
-        },
-        {
-          "command": "workbench.action.focusActiveEditorGroup"
-        }
-      ]
-    },
-    {
-      "before": ["<leader>", "c", "c"],
-      "commands": ["workbench.panel.chat.view.copilot.focus"]
     }
   ],
   "vim.visualModeKeyBindings": [
     {
       "before": ["<leader>", "f", "f"],
       "commands": ["editor.action.formatSelection"]
-    },
-    {
-      "before": ["<leader>", "c", "c"],
-      "commands": ["workbench.panel.chat.view.copilot.focus"]
     }
   ],
 
@@ -214,23 +155,26 @@
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
-  "svelte.enable-ts-plugin": true,
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "playwright.reuseBrowser": true,
-  "playwright.showTrace": false,
   "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.formatOnSave": true
+    // "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.black-formatter"
   },
+  "python.languageServer": "Pylance",
   "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
-  "python.linting.flake8Args": ["--max-line-length=81"],
+  "python.analysis.typeCheckingMode": "standard",
+  "python.envFile": "${workspaceFolder}/.env",
+  "launch": {
+    "envFile": "${workspaceFolder}/.env"
+  },
   "editor.minimap.enabled": false,
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -241,26 +185,23 @@
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "nxConsole.showNodeVersionOnStartup": false,
-  "database-client.telemetry.usesOnlineServices": false,
   "window.titleBarStyle": "custom",
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsserver.maxTsServerMemory": 5128,
-  "markdown-preview-enhanced.liveUpdate": true,
   "debug.onTaskErrors": "debugAnyway",
   "explorer.confirmDragAndDrop": false,
-  "workbench.activityBar.location": "top",
-  "github.copilot.enable": {
-    "*": true,
-    "plaintext": false,
-    "markdown": false,
-    "scminput": false
-  },
+  "workbench.activityBar.location": "hidden",
   "window.commandCenter": false,
   "extensions.ignoreRecommendations": true,
-  "github.copilot.editor.enableAutoCompletions": true,
   "jupyter.interactiveWindow.creationMode": "perFile",
   "interactiveWindow.executeWithShiftEnter": true,
-  "explorer.confirmDelete": false
+  "explorer.confirmDelete": false,
+  "breadcrumbs.enabled": false,
+  "breadcrumbs.filePath": "off",
+  "breadcrumbs.icons": false,
+  "workbench.editor.editorActionsLocation": "hidden",
+  "chat.agent.enabled": true,
+  "github.copilot.nextEditSuggestions.enabled": false,
+  "rapidapi.terminalLink.enabled": false,
 }
