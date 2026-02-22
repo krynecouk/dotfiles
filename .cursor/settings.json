@@ -1,0 +1,317 @@
+{
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.lineNumbers": "relative",
+    "editor.suggestSelection": "first",
+    "editor.inlineSuggest.enabled": true,
+    "editor.guides.indentation": false,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    },
+    "editor.smoothScrolling": true,
+    "git.decorations.enabled": false,
+    "files.trimTrailingWhitespace": true,
+    "files.autoSave": "afterDelay",
+    "workbench.editor.showTabs": "none",
+    "workbench.startupEditor": "none",
+    "workbench.tree.renderIndentGuides": "none",
+    // "workbench.panel.opensMaximized": "always",
+    "window.openFoldersInNewWindow": "on",
+    "terminal.integrated.shellIntegration.history": 3000,
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.suggest.enabled": true,
+    "terminal.integrated.fontSize": 14,
+    "explorer.openEditors.visible": 1,
+    "window.nativeTabs": true,
+    "security.workspace.trust.untrustedFiles": "open",
+    "editor.fontLigatures": true,
+    "editor.fontWeight": "400",
+    "editor.fontSize": 14,
+    "editor.fontFamily": "JetBrains Mono",
+    "vim.statusBarColorControl": false,
+    "vim.useCtrlKeys": true,
+    "vim.hlsearch": true,
+    "vim.incsearch": true,
+    "vim.smartcase": true,
+    "vim.useSystemClipboard": true,
+    "vim.leader": "<space>",
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "<leader>",
+                ","
+            ],
+            "commands": [
+                "workbench.action.showAllEditorsByMostRecentlyUsed",
+                "workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup"
+            ]
+        },
+        {
+            "before": [
+                "'"
+            ],
+            "commands": [
+                "bookmarks.listFromAllFiles"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "<leader>",
+            ],
+            "commands": [
+                "workbench.action.quickOpen"
+            ]
+        },
+        {
+            "before": [
+                "\""
+            ],
+            "commands": [
+                "clipring.selectAndPasteRingItem"
+            ]
+        },
+        {
+            "before": [
+                "m"
+            ],
+            "commands": [
+                "bookmarks.toggleLabeled"
+            ]
+        },
+        {
+            "before": [
+                "K"
+            ],
+            "commands": [
+                "editor.action.showHover"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "s"
+            ],
+            "commands": [
+                "workbench.action.gotoSymbol"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "S"
+            ],
+            "commands": [
+                "workbench.action.showAllSymbols"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "r"
+            ],
+            "commands": [
+                "editor.action.goToReferences"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "i"
+            ],
+            "commands": [
+                "editor.action.goToImplementation"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "]"
+            ],
+            "commands": [
+                "editor.action.marker.nextInFiles"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "["
+            ],
+            "commands": [
+                "editor.action.marker.prevInFiles"
+            ]
+        },
+        {
+            "before": [
+                "g",
+                "/"
+            ],
+            "commands": [
+                "workbench.action.quickTextSearch"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "f",
+                "f"
+            ],
+            "commands": [
+                {
+                    "command": "editor.action.formatDocument"
+                },
+                {
+                    "command": "python.sortImports"
+                }
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "g",
+                "g"
+            ],
+            "commands": [
+                "magit.status"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "p",
+                "w"
+            ],
+            "commands": [
+                "workbench.action.files.saveAll"
+            ]
+        },
+        {
+            "before": [
+                "ctrl+`"
+            ],
+            "commands": [
+                "workbench.action.terminal.toggleTerminal"
+            ]
+        },
+        {
+            "before": [
+                "ctrl+."
+            ],
+            "commands": [
+                "editor.action.triggerSuggest"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "t",
+                "t"
+            ],
+            "commands": [
+                "workbench.view.explorer"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "t",
+                "s"
+            ],
+            "commands": [
+                "workbench.action.toggleActivityBarVisibility"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "o",
+                "s"
+            ],
+            "commands": [
+                "workbench.action.toggleActivityBarVisibility"
+            ]
+        },
+        {
+            "before": [
+                "Tab"
+            ],
+            "commands": [
+                "editor.action.acceptCursorTabSuggestion"
+            ],
+        }
+    ],
+    "vim.visualModeKeyBindings": [
+        {
+            "before": [
+                "<leader>",
+                "f",
+                "f"
+            ],
+            "commands": [
+                "editor.action.formatSelection"
+            ]
+        }
+    ],
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[python]": {
+        "editor.formatOnSave": false,
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "python.languageServer": "None",
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.analysis.typeCheckingMode": "standard",
+    "editor.minimap.enabled": false,
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "window.titleBarStyle": "custom",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "typescript.tsserver.maxTsServerMemory": 5128,
+    "debug.onTaskErrors": "debugAnyway",
+    "explorer.confirmDragAndDrop": false,
+    "workbench.activityBar.location": "hidden",
+    "window.commandCenter": false,
+    "extensions.ignoreRecommendations": true,
+    "interactiveWindow.executeWithShiftEnter": true,
+    "explorer.confirmDelete": false,
+    "breadcrumbs.enabled": false,
+    "breadcrumbs.filePath": "off",
+    "breadcrumbs.icons": false,
+    "workbench.editor.editorActionsLocation": "hidden",
+    "chat.agent.enabled": true,
+    "cursor.cpp.disabledLanguages": [
+        "plaintext",
+        "markdown",
+        "scminput"
+    ],
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
+    },
+    "cursor.inlineDiff.mode": "unified",
+    "workbench.layoutControl.enabled": false,
+    "cursorpyright.analysis.typeCheckingMode": "standard",
+    "editor.multiCursorModifier": "ctrlCmd",
+    "window.customTitleBarVisibility": "never",
+    "redhat.telemetry.enabled": false,
+    "vs-kubernetes": {
+        "vs-kubernetes.crd-code-completion": "disabled"
+    },
+    "claudeCode.preferredLocation": "sidebar",
+    "claudeCode.useTerminal": true
+}
