@@ -1,21 +1,30 @@
-local Plug = vim.fn['plug#']
-local install_path = vim.fn.stdpath "data" .. "/plugged"
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
+if not vim.uv.fs_stat(lazypath) then
+  vim.fn.system({
+    "git", "clone", "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable",
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
 
-vim.call('plug#begin', install_path)
+require("lazy").setup({
+  -- Themes
+  { "dracula/vim", name = "dracula" },
 
--- Themes
-Plug('dracula/vim', { as = 'dracula' })
+  -- Navigation
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
 
--- Navigation
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
+  -- Editor
+  "tpope/vim-surround",
+  "tpope/vim-commentary",
 
--- Editor
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-commentary'
-
--- Language support
-Plug 'neovim/nvim-lsp'
-Plug 'nvim-treesitter/nvim-treesitter'
-
-vim.call('plug#end')
+  -- Language support
+  "neovim/nvim-lspconfig",
+  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+})
